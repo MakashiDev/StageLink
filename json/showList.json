@@ -1,0 +1,35 @@
+{
+    "shows": [{
+            "name": "Addams Family",
+            "type": "musical",
+            "id": 1,
+            "actCount": 2,
+            "cueCount": 10,
+            "cues": [{
+                    "name": "Cue 1",
+                    "id": 1
+                },
+                {
+                    "name": "Cue 2",
+                    "id": 2
+                }
+            ]
+        },
+        {
+            "name": "Camp Rock",
+            "type": "musical",
+            "id": 2,
+            "actCount": 2,
+            "cueCount": 10,
+            "cues": [{
+                    "name": "Cue 1",
+                    "id": 1
+                },
+                {
+                    "name": "Cue 2",
+                    "id": 2
+                }
+            ]
+        }
+    ]
+}
