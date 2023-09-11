@@ -39,7 +39,7 @@ def on_connect():
 @socketio.on('camera_feed_request')
 def on_camera_feed_request():
     cameraAgent = CameraAgent(0)
-    cameraAgent.get_live_camera_feed()
+    socketio.start_background_task(cameraAgent.get_live_camera_feed)
 
 
 if __name__ == '__main__':
