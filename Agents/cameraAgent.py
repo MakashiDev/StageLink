@@ -15,6 +15,9 @@ class CameraAgent:
         while True:
             # Read a frame from the camera and resize it to 720p resolution
             ret, frame = camera.read()
+            if frame is None:
+                print("No frame")
+                continue
             frame = cv2.resize(frame, (462, 220))
 
             # Convert the resized frame to a JPEG image with reduced quality
@@ -26,4 +29,5 @@ class CameraAgent:
             base64_string = base64_data.decode('utf-8')
 
             # Emit the base64 encoded string to the client
-            emit('camera_feed', base64_string)
+            print("Emitting camera feed")
+            emit('camera_feed', base64_string, broadcast=True)

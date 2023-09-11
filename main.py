@@ -6,12 +6,13 @@ from Agents.cameraAgent import CameraAgent
 from Agents.cueAgent import CueAgent
 from Agents.showAgent import ShowAgent
 
-cameraAgent = CameraAgent(0)
-
-showAgent = ShowAgent()
 
 app = Flask(__name__)
 socketio = SocketIO(app)
+
+cameraAgent = CameraAgent(1)
+cameraAgent.app_context = app.app_context()
+showAgent = ShowAgent()
 
 
 @app.route('/')
@@ -39,7 +40,8 @@ def on_connect():
 @socketio.on('camera_feed_request')
 def on_camera_feed_request():
     cameraAgent = CameraAgent(0)
-    socketio.start_background_task(cameraAgent.get_live_camera_feed)
+    cameraAgent.app_context = app.app_context()
+    cameraAgent.get_live_camera_feed()
 
 
 if __name__ == '__main__':
