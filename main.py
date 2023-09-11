@@ -6,7 +6,9 @@ from Agents.cameraAgent import CameraAgent
 from Agents.cueAgent import CueAgent
 from Agents.showAgent import ShowAgent
 
-sA = ShowAgent()
+cameraAgent = CameraAgent(0)
+
+showAgent = ShowAgent()
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -20,10 +22,24 @@ def index():
 @app.route('/show/<show_id>')
 def show(show_id):
     print(show_id)
-    show = sA.select_show(show_id)
+    show = showAgent.select_show(show_id)
     print(show)
     # return json.dumps(show)
     return json.dumps(show)
+
+
+# SocketIO events
+@socketio.on('connect')
+def on_connect():
+    print('Client connected')
+
+# Camera feed
+
+
+@socketio.on('camera_feed_request')
+def on_camera_feed_request():
+    cameraAgent = CameraAgent(0)
+    cameraAgent.get_live_camera_feed()
 
 
 if __name__ == '__main__':
