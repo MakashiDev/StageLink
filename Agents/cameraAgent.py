@@ -28,6 +28,5 @@ class CameraAgent:
             base64_data = base64.b64encode(jpeg.tobytes())
             base64_string = base64_data.decode('utf-8')
 
-            # Emit the base64 encoded string to the client
-            print("Emitting camera feed")
-            emit('camera_feed', base64_string, broadcast=True)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + base64_data + b'\r\n')

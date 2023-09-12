@@ -1,6 +1,8 @@
 from flask import Flask, render_template, Response
 from flask_socketio import SocketIO, emit
 import json
+import base64
+import cv2
 
 from Agents.cameraAgent import CameraAgent
 from Agents.cueAgent import CueAgent
