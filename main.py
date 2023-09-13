@@ -1,7 +1,6 @@
 from flask import Flask, render_template, Response
 from flask_socketio import SocketIO, emit
 import json
-import base64
 import cv2
 
 from Agents.cameraAgent import CameraAgent
@@ -12,7 +11,7 @@ from Agents.showAgent import ShowAgent
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-cameraAgent = CameraAgent(0)
+cameraAgent = CameraAgent()
 cameraAgent.app_context = app.app_context()
 showAgent = ShowAgent()
 
@@ -36,25 +35,20 @@ def show(show_id):
     return json.dumps(show)
 
 
-def gen_frames():
-    camera = cv2.VideoCapture(0)
-    camera.set(cv2.CAP_PROP_FPS, 30)
-    while True:
-        success, frame = camera.read()  # read the camera frame
-        if not success:
-            break
-        else:
-            frame = cv2.resize(frame, (462, 220))
-            ret, buffer = cv2.imencode(
-                '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
+@app.route('/camera_feed/<int:index>')
+def camera_feed(index=0):
+    return Response(cameraAgent.gen_frames(index), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-@app.route('/camera_feed')
-def camera_feed():
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+@app.route('/default_camera_feed')
+def default_camera_feed():
+    return Response(cameraAgent.gen_frames(0), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/camera_feeds')
+def camera_feeds():
+    cameras = cameraAgent.get_cameras()
+    return json.dumps(cameras)
 
 
 @socketio.on('connect')

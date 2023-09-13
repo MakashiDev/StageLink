@@ -1,32 +1,63 @@
 import cv2
 import base64
 from flask_socketio import SocketIO, emit
+import os
 
 
 class CameraAgent:
-    def __init__(self, cameraIndex):
-        cameraIndex = cameraIndex
+    """ 
+    This class is responsible for handling the camera feed.
 
-        self.cameraIndex = cameraIndex
+ """
 
-    def get_live_camera_feed(self):
-        camera = cv2.VideoCapture(self.cameraIndex)
-        camera.set(cv2.CAP_PROP_FPS, 30)  # Set FPS value to 30
+    def gen_frames(self, index=0):
+        """
+        This function is responsible for capturing the camera feed and converting it to a base64 encoded string.
+        """
+
+        operation_system = os.name
+        print(operation_system)  # nt = windows, posix = linux or mac
+        if operation_system == "nt":
+            print("Windows")
+            camera = cv2.VideoCapture(index + cv2.CAP_DSHOW)
+        else:
+            print("Linux or Mac")
+            camera = cv2.VideoCapture(index)
+
+        camera.set(cv2.CAP_PROP_FPS, 30)
         while True:
-            # Read a frame from the camera and resize it to 720p resolution
-            ret, frame = camera.read()
-            if frame is None:
-                print("No frame")
-                continue
-            frame = cv2.resize(frame, (462, 220))
+            success, frame = camera.read()  # read the camera frame
+            if not success:
+                break
+            else:
+                frame = cv2.resize(frame, (462, 220))
+                ret, buffer = cv2.imencode(
+                    '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+                frame = buffer.tobytes()
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 
-            # Convert the resized frame to a JPEG image with reduced quality
-            ret, jpeg = cv2.imencode(
-                '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+    def get_cameras(self):
+        """
+        This function is responsible for getting all the available cameras.
+        """
+        cameras = {}
+        for i in range(0, 10):
+            operation_system = os.name
+            if operation_system == "nt":
+                print("Windows")
+                camera = cv2.VideoCapture(i + cv2.CAP_DSHOW)
+            else:
+                print("Linux or Mac")
+                camera = cv2.VideoCapture(i)
+            if camera.isOpened():
+                # get name of camera
+                ret, frame = camera.read()
+                if ret:
+                    cameras[i] = {
+                        "name": camera.getBackendName(),
+                        "index": i
+                    }
+                camera.release()
 
-            # Convert the JPEG image to a base64 encoded string
-            base64_data = base64.b64encode(jpeg.tobytes())
-            base64_string = base64_data.decode('utf-8')
-
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + base64_data + b'\r\n')
+        return cameras
