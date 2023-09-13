@@ -1,28 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="w-screen h-screen">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<!-- tailwindcss -->
+		<title>Stage Manager Dashboard</title>
+		<!-- Include Tailwind CSS -->
 		<script src="https://cdn.tailwindcss.com"></script>
-		<!-- socket.io -->
+		<!-- Include Socket.io -->
 		<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-		<title>Document</title>
+
+		<style>
+			.custom-btn {
+				width: 260px;
+				height: 80px;
+				color: #fff;
+				border-radius: 5px;
+				padding: 10px 25px;
+				font-family: "Lato", sans-serif;
+				font-weight: 700;
+				font-size: 30px;
+				background: transparent;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				position: relative;
+				display: inline-block;
+				box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+					7px 7px 20px 0px rgba(0, 0, 0, 0.1),
+					4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+				outline: none;
+			}
+			/* 15 */
+
+			.btn-15 {
+				background: #b621fe;
+				border: none;
+				z-index: 1;
+			}
+
+			.btn-15:after {
+				position: absolute;
+				content: "";
+				width: 0;
+				height: 100%;
+				top: 0;
+				right: 0;
+				z-index: -1;
+				background-color: #663dff;
+				border-radius: 5px;
+				box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+					7px 7px 20px 0px rgba(0, 0, 0, 0.1),
+					4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+				transition: all 0.3s ease;
+			}
+
+			.btn-15:hover {
+				color: #fff;
+			}
+
+			.btn-15:hover:after {
+				left: 0;
+				width: 100%;
+			}
+
+			.btn-15:active {
+				top: 2px;
+			}
+		</style>
 	</head>
 
-	<body>
-		<div class="flex flex-col items-center justify-center h-screen">
-			<h1 class="text-4xl font-bold">camera feed</h1>
-			<img
-				src="{{ url_for('camera_feed') }}"
-				alt=""
-				id="camera"
-				class="w-1/2"
-			/>
-		</div>
+	<body
+		class="bg-gray-100 flex flex-col items-center justify-center dark:bg-gray-900 dark:text-white w-screen h-screen"
+	>
+		<form action="" class="flex flex-col items-center justify-center">
+			<p class="text-4xl dark:text-white text-black">Select Show</p>
+			<select
+				name=""
+				id="show"
+				class="text-4xl dark:text-white dark:bg-black text-black rounded-lg border-2 border-black dark:border-white p-2 mt-7"
+			></select>
+
+			<button class="custom-btn btn-15 mt-8">Start Show</button>
+		</form>
 	</body>
 
-	<script>
-		const socket = io();
+	<script defer>
+		let showList = [];
+
+		const socket = io("http://localhost:5000");
+
+		socket.on("connect", () => {
+			console.log("connected");
+		});
+
+		const select = document.getElementById("show");
+
+		const form = document.querySelector("form");
+		form.addEventListener("submit", (e) => {
+			e.preventDefault();
+			startFormSubmission();
+		});
+
+		async function getShows() {
+			const shows = await fetch("/api/shows");
+			const data = await shows.json();
+
+			console.log(data.shows);
+			console.log(typeof data.shows);
+			showList = data.shows;
+			data.shows.forEach((show) => {
+				console.log(show.name);
+				const option = document.createElement("option");
+				option.value = show.name;
+				option.innerText = show.name;
+				select.appendChild(option);
+			});
+		}
+
+		async function startFormSubmission() {
+			showList.forEach((show) => {
+				if (show.name === select.value) {
+					console.log(show);
+					const showId = show.id;
+					console.log(showId);
+					window.location.href = `/show/${showId}`;
+				}
+			});
+		}
+
+		/* async function startShow(showId) {
+    	const show = await fetch(`/api/shows/${showId}/start`);
+    	const showData = await show.json();
+    	console.log(showData);
+    } */
+		getShows();
 	</script>
 </html>

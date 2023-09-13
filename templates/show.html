@@ -10,6 +10,10 @@
 		<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 	</head>
 
+	<script>
+		const show_id = "{{ show_id }}";
+	</script>
+
 	<body
 		class="bg-gray-100 flex flex-row items-center justify-center dark:bg-gray-900 dark:text-white w-screen h-screen"
 	>
@@ -143,13 +147,15 @@
 			<div class="flex flex-row w-full h-1/6 border-b-2 border-b-white">
 				<!-- show -->
 				<div class="flex flex-col w-1/2 h-full">
-					<h1 class="text-2xl font-bold">Addams Family</h1>
-					<p class="text-xs">Musical</p>
+					<h1 class="text-2xl font-bold" id="showName">
+						Addams Family
+					</h1>
+					<p class="text-xs" id="showType">Musical</p>
 				</div>
 				<!-- show info -->
 				<div class="flex flex-col w-1/2 h-full">
-					<h1 class="text-2xl font-bold">Act 1</h1>
-					<p class="text-xs">Scene 4</p>
+					<h1 class="text-2xl font-bold" id="showAct">Act 1</h1>
+					<p class="text-xs" id="showScene">Scene 4</p>
 				</div>
 
 				<!-- clock -->
@@ -196,4 +202,87 @@
 			<p>heh</p>
 		</div>
 	</body>
+
+	<script defer>
+		const socket = io("http://localhost:5000");
+
+		const showName = document.getElementById("showName");
+		const showType = document.getElementById("showType");
+		const showAct = document.getElementById("showAct");
+		const showScene = document.getElementById("showScene");
+		const timer = document.getElementById("timer");
+		const clock = document.getElementById("clock");
+
+		socket.on("connect", () => {
+			console.log("connected");
+		});
+
+		async function startShow(showId) {
+			const show = await fetch(`/api/shows/${showId}/start`);
+			const showData = await show.json();
+			console.log(showData);
+
+			showName.innerText = showData.name;
+			showType.innerText = showData.type;
+			showAct.innerText = `Act ${showData.act}`;
+			showScene.innerText = `Scene ${showData.scene}`;
+		}
+
+		console.log(show_id);
+		if (show_id == "{{ show_id }}") {
+			console.error("show_id is null");
+			while (show_id == null) {
+				console.log("waiting for show_id");
+			}
+		} else {
+			console.log("show_id is not null");
+		}
+		startShow(show_id);
+	</script>
+
+	<script defer>
+		/* Clock */
+
+		function updateClock() {
+			const now = new Date();
+			const time = now.toLocaleTimeString();
+			clock.innerText = time;
+		}
+
+		setInterval(updateClock, 1000);
+
+		/* Timer */
+
+		let seconds = 0;
+		let minutes = 0;
+		let hours = 0;
+
+		function updateTimer() {
+			seconds++;
+			if (seconds == 60) {
+				seconds = 0;
+				minutes++;
+			}
+			if (minutes == 60) {
+				minutes = 0;
+				hours++;
+			}
+
+			const time = `${hours}:${minutes}:${seconds}`;
+			timer.innerText = time;
+		}
+
+		setInterval(updateTimer, 1000);
+	</script>
+
+	<script defer>
+		/* Dark Mode */
+
+		const toggle = document.querySelector("button");
+
+		toggle.addEventListener("click", () => {
+			document.body.classList.toggle("dark");
+			toggle.classList.toggle("dark");
+		});
+	</script>
 </html>

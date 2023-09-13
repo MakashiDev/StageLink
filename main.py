@@ -4,7 +4,6 @@ import json
 import cv2
 
 from Agents.cameraAgent import CameraAgent
-from Agents.cueAgent import CueAgent
 from Agents.showAgent import ShowAgent
 
 
@@ -21,18 +20,54 @@ def index():
     return render_template('index.html')
 
 
-@app.route("/test")
-def test():
-    return render_template('testing.html')
+@app.route("/show/<show_id>")
+def show_page(show_id):
+    return render_template('show.html', show_id=show_id)
 
 
-@app.route('/show/<show_id>')
+@app.route('/api/shows/<show_id>')
 def show(show_id):
     print(show_id)
     show = showAgent.select_show(show_id)
+    showAgent.cues.set_show_id(show_id)
     print(show)
     # return json.dumps(show)
     return json.dumps(show)
+
+
+@app.route('/api/shows')
+def shows():
+    shows = showAgent.shows
+    return json.dumps({"shows": shows})
+
+
+@app.route('/api/shows/<show_id>/cues')
+def cues(show_id):
+    cues = showAgent.cues.get_list()
+    return json.dumps(cues)
+
+
+@app.route('/api/shows/<show_id>/cues/<cue_id>')
+def cue(show_id, cue_id):
+    cue = showAgent.cues.get(cue_id)
+    return json.dumps(cue)
+
+
+@app.route('/api/shows/<show_id>/cues/next')
+def next_cue(show_id, cue_id):
+    showAgent.cues.next()
+    return json.dumps(showAgent.cues.get_current())
+
+
+@app.route('/api/shows/<show_id>/cues/previous')
+def previous_cue(show_id, cue_id):
+    showAgent.cues.previous()
+    return json.dumps(showAgent.cues.get_current())
+
+
+@app.route('/api/shows/<show_id>/start')
+def start_show(show_id):
+    return json.dumps(showAgent.start_show(show_id))
 
 
 @app.route('/camera_feed/<int:index>')
