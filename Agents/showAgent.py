@@ -4,235 +4,122 @@ This agent is responsible for managing the show list.
 
 
 import json
-import os
-import time
+from Agents.cueAgent import CueAgent
 
 
 class ShowAgent:
-    """ 
-    This agent is responsible for managing the show list.
-     """
 
     def __init__(self):
         """
-        This agent is responsible for managing the show list.
+        This method is responsible for initializing the show agent.
         """
-        self.shows = []
-        self.showsFolder = "../shows"
-        self.show = None
-        self.showPath = None
+        shows = []
+        showsPath = "json/showList.json"
 
-        self.act = None
+        self.shows = shows
+        self.showsPath = showsPath
+        self.get_show_list()
+        self.cues = CueAgent()
 
-        self.load()
-
-    def load(self):
-        """
-        Loads the shows from the shows folder.
-        """
-        for show in os.listdir(self.showsFolder):
-            if show.endswith(".json"):
-                with open(os.path.join(self.showsFolder, show)) as f:
-                    showFile = json.load(f)
-                    name = showFile.get("name")
-                    slug = showFile.get("slug")
-                    self.shows.append({"name": name, "slug": slug})
-        return self.shows
-
-    def select(self, slug):
-        """
-        Selects a show from the list of shows.
-        """
-        for show in self.shows:
-            if show.get("slug") == slug:
-                self.show = json.load(
-                    open(os.path.join(self.showsFolder, slug + ".json")))
-                self.showPath = os.path.join(self.showsFolder, slug + ".json")
-                self.act = Acts(self.show)
-
-                return show
-
-    def get(self):
-        """
-        Returns the currently selected show.
-        """
-        return self.show
-
-
-class Acts:
-
-    def __init__(self, show):
-        """ 
-        This agent is responsible for managing the acts.
-        """
-        self.show = show
-        self.actIndex = None
+        self.currentShow = None
         self.currentAct = None
-        self.act = None
-        self.actCount = None
-
-        self.scene = None
-
-        self.load()
-
-    def load(self):
-        """
-        Loads the acts from the show.
-        """
-        self.act = self.show.get("acts")
-        self.actCount = len(self.act)
-        self.actIndex = 1
-        self.currentAct = self.act[self.actIndex - 1]
-
-        self.scene = Scenes(self.get())
-
-        return self.act
-
-    def previous(self):
-        """
-        Returns the previous act.
-        """
-        if self.actIndex > 1:
-            self.actIndex -= 1
-        else:
-            self.actIndex = self.actCount
-        return self.actIndex
-
-    def next(self):
-        """
-        Returns the next act.
-        """
-        if self.actIndex < self.actCount:
-            self.actIndex += 1
-        else:
-            self.actIndex = 1
-        return self.actIndex
-
-    def get(self):
-        """
-        Returns the current act.
-        """
-        return self.currentAct
-
-
-class Scenes:
-    """
-    This agent is responsible for managing the scenes.
-    """
-
-    def __init__(self, act):
-        """
-        This agent is responsible for managing the scenes.
-        """
-        self.act = act
-        self.scenes = None
-        self.sceneCount = None
-        self.sceneIndex = None
-
         self.currentScene = None
 
-        self.cue = None
+    def get_show_list(self):
+        jsonFile = open(self.showsPath, "r")
+        self.shows = json.load(jsonFile)["shows"]
+        print(self.shows)
+        jsonFile.close()
 
-        self.load()
+    def save_show_list(self):
+        jsonFile = open(self.showsPath, "w")
+        json.dump(self.shows, jsonFile)
+        jsonFile.close()
 
-    def load(self):
+    def select_show(self, show_id):
         """
-        Loads the scenes from the act.
+        This method is responsible for selecting a show by ID.
         """
-        self.scenes = self.act.get("scenes")
-        self.sceneCount = len(self.scenes)
-        self.sceneIndex = 1
-        self.currentScene = self.scenes[self.sceneIndex - 1]
+        if show_id is None:
+            return None
 
-        self.cue = Cues(self.get())
+        print("Show ID: " + str(show_id))
 
-        return self.scenes
+        for show in self.shows:
+            if show["id"] == int(show_id):
+                print("Show selected: ")
+                print(show)
+                print("--------------------")
+                return show
 
-    def previous(self):
-        """
-        Returns the previous scene.
-        """
-        if self.sceneIndex > 1:
-            self.sceneIndex -= 1
-        else:
-            self.sceneIndex = self.sceneCount
-        return self.sceneIndex
+    def create_show(self, name, type, actCount):
+        id = len(self.shows) + 1
+        show = {
+            "name": name,
+            "type": type,
+            "actCount": actCount,
+            "id": id,
+            "cueCount": 0,
+        }
 
-    def next(self):
-        """
-        Returns the next scene.
-        """
-        if self.sceneIndex < self.sceneCount:
-            self.sceneIndex += 1
-        else:
-            self.sceneIndex = 1
-        return self.sceneIndex
+        self.shows.append(show)
+        self.save_show_list()
 
-    def get(self):
-        """
-        Returns the current scene.
-        """
+    def start_show(self, show_id):
+        if show_id is None:
+            return None
+
+        show = self.select_show(show_id)
+        if show is None:
+            return None
+
+        self.cues.set_show_id(show_id)
+        self.cues.get_list()
+        self.cues.start()
+
+        self.currentShow = show_id
+        self.currentAct = 1
+        self.currentScene = 1
+
+        return self.currentInfo()
+
+    def currentInfo(self):
+        show = self.select_show(self.currentShow)
+        if show is None:
+            return None
+
+        return {
+            "name": show["name"],
+            "type": show["type"],
+            "actCount": show["actCount"],
+            "act": self.currentAct,
+            "scene": self.currentScene,
+            "id": show["id"],
+            "cueCount": show["cueCount"],
+            "currentCue": self.cues.currentCue,
+        }
+
+    def next_cue(self):
+        self.cues.next()
+
+    def previous_cue(self):
+        self.cues.previous()
+
+    def get_current_cue(self):
+        return self.cues.get_current()
+
+    def next_scene(self):
+        self.currentScene += 1
         return self.currentScene
 
+    def previous_scene(self):
+        self.currentScene -= 1
+        return self.currentScene
 
-class Cues:
-    """
-    This agent is responsible for managing the cues.
-    """
+    def next_act(self):
+        self.currentAct += 1
+        return self.currentAct
 
-    def __init__(self, act):
-        """
-        This agent is responsible for managing the cues.
-        """
-        self.act = act
-        self.cues = None
-        self.cueCount = None
-        self.cueIndex = None
-
-        self.currentCue = None
-        self.load()
-
-    def load(self):
-        """
-        Loads the cues from the act.
-        """
-        self.cues = self.act.get("cues")
-
-        self.cueCount = len(self.cues)
-        self.cueIndex = 1
-        self.currentCue = self.cues[self.cueIndex - 1]
-        return self.cues
-
-    def previous(self):
-        """
-        Returns the previous cue.
-        """
-        if self.cueIndex > 1:
-            self.cueIndex -= 1
-        else:
-            self.cueIndex = self.cueCount
-        return self.cueIndex
-
-    def next(self):
-        """
-        Returns the next cue.
-        """
-        if self.cueIndex < self.cueCount:
-            self.cueIndex += 1
-        else:
-            self.cueIndex = 1
-        return self.cueIndex
-
-    def get(self):
-        """
-        Returns the current cue.
-        """
-        return self.currentCue
-
-
-show = ShowAgent()
-
-
-show.select("addams-family")
-
-print(show.act.scene.cue.get())
+    def previous_act(self):
+        self.currentAct -= 1
+        return self.currentAct
