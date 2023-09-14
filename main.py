@@ -42,7 +42,7 @@ def show(show_id):
 
 @app.route('/api/shows')
 def shows():
-    shows = showAgent.shows
+    shows = showAgent.loadShows()
     return json.dumps({"shows": shows})
 
 
