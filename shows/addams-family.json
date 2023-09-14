@@ -1,0 +1,107 @@
+{
+	"name": "Addams Family",
+	"type": "musical",
+	"slug": "addams-family",
+	"id": 1,
+	"actCount": 2,
+	"currentAct": null,
+	"acts": [
+		{
+			"act": 1,
+			"totalCues": 10,
+			"currentCue": null,
+			"sceneCount": 2,
+			"currentScene": null,
+			"scenes": [
+				{
+					"name": "Scene 1",
+					"scene": 1,
+					"slug": "addams-family_scene_1",
+					"cueCount": 5,
+					"currentCue": null,
+					"cues": [
+						{
+							"name": "Spotlight on Gomez",
+							"cue": 1,
+							"slug": "addams-family_scene_1_cue_1"
+						},
+						{
+							"name": "Fester enters",
+							"cue": 2,
+							"slug": "addams-family_scene_1_cue_2"
+						}
+					]
+				},
+				{
+					"name": "Scene 2",
+					"scene": 2,
+					"slug": "addams-family_scene_2",
+					"cueCount": 5,
+					"currentCue": null,
+					"cues": [
+						{
+							"name": "Gomez and Lurch enter",
+							"cue": 1,
+							"slug": "addams-family_scene_2_cue_1"
+						},
+						{
+							"name": "Wednesday enters",
+							"cue": 2,
+							"slug": "addams-family_scene_2_cue_2"
+						}
+					]
+				}
+			]
+		},
+		{
+			"act": 2,
+			"totalCues": 10,
+			"currentCue": null,
+			"sceneCount": 2,
+			"currentScene": null,
+			"scenes": [
+				{
+					"name": "Scene 1",
+					"slug": "addams-family_scene_1",
+					"cueCount": 3,
+					"currentCue": null,
+					"cues": [
+						{
+							"name": "When your an Addams",
+							"slug": "addams-family_scene_1_cue_1",
+							"type": "song"
+						},
+						{
+							"name": "Spotlight on Morticia",
+							"slug": "addams-family_scene_1_cue_2",
+							"type": "lighting"
+						},
+						{
+							"name": "Wednesday enters",
+							"slug": "addams-family_scene_1_cue_2",
+							"type": "entrance"
+						}
+					]
+				},
+				{
+					"name": "Scene 2",
+					"slug": "addams-family_scene_2",
+					"cueCount": 2,
+					"currentCue": null,
+					"cues": [
+						{
+							"name": "Lurch enter",
+							"slug": "addams-family_scene_2_cue_1",
+							"type": "entrance"
+						},
+						{
+							"name": "Gomez exits",
+							"slug": "addams-family_scene_2_cue_2",
+							"type": "exit"
+						}
+					]
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,73 @@
+{
+    "name": "Camp Rock",
+    "type": "musical",
+    "slug": "camp-rock",
+    "id": 3,
+    "actCount": 2,
+    "currentAct": null,
+    "acts": [
+        {
+            "act": 1,
+            "totalCues": 0,
+            "currentCue": null,
+            "sceneCount": 2,
+            "currentScene": null,
+            "scenes": [
+                {
+                    "name": "Scene 1",
+                    "scene": 1,
+                    "slug": "camp-rock_act_1_scene_1",
+                    "cueCount": 3,
+                    "currentCue": null,
+                    "cues": [
+                        {
+                            "name": "Cue 1",
+                            "slug": "camp-rock_scene_1_cue_1"
+                        },
+                        {
+                            "name": "Cue 2",
+                            "slug": "camp-rock_scene_1_cue_2"
+                        },
+                        {
+                            "name": "Cue 3",
+                            "slug": "camp-rock_scene_1_cue_3"
+                        }
+                    ]
+                },
+                {
+                    "name": "Scene 2",
+                    "scene": 2,
+                    "slug": "camp-rock_act_1_scene_2",
+                    "cueCount": 3,
+                    "currentCue": null,
+                    "cues": [
+                        {
+                            "name": "Cue 1",
+                            "slug": "camp-rock_scene_2_cue_1"
+                        },
+                        {
+                            "name": "Cue 2",
+                            "slug": "camp-rock_scene_2_cue_2"
+                        },
+                        {
+                            "name": "Cue 3",
+                            "slug": "camp-rock_scene_2_cue_3"
+                        }
+                    ]
+                }
+            ],
+            "id": 1,
+            "slug": "camp-rock_act_1"
+        },
+        {
+            "act": 2,
+            "totalCues": 0,
+            "currentCue": null,
+            "sceneCount": 0,
+            "currentScene": null,
+            "scenes": [],
+            "id": 2,
+            "slug": "camp-rock_act_2"
+        }
+    ]
+}
