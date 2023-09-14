@@ -169,10 +169,28 @@
 			<div class="flex flex-row h-4/6" />
 			<!-- cues  -->
 			<div class="flex flex-col w-1/4 h-full">
-				<div class="flex flex-col w-full h-20">
+				<div class="flex flex-col w-full h-5/6">
 					<h1 class="text-2xl font-bold">Cues</h1>
-					<p>Cue1 hehea</p>
-					<p>cu2 heheha</p>
+					<p>Blackout</p>
+					<p>Wenesday enters</p>
+					<p>Uncle Fester enters</p>
+					<p>Uncle Fester exits</p>
+					<p>Wenesday exits</p>
+				</div>
+				<!--  cue control -->
+				<div
+					class="flex place-self-end w-full h-1/6 border-t-2 border-t-white"
+				>
+					<button
+						class="w-1/2 dark:bg-gray-800 bg-gray-200 hover:dark:bg-gray-950 hover:bg-gray-300 ease-in-out duration-150"
+					>
+						Previous
+					</button>
+					<button
+						class="w-1/2 border-l-2 border-l-white dark:bg-gray-800 bg-gray-200 hover:dark:bg-gray-950 hover:bg-gray-300 ease-in-out duration-150"
+					>
+						Next
+					</button>
 				</div>
 			</div>
 
@@ -182,24 +200,33 @@
 					<img
 						src="{{ url_for('default_camera_feed') }}"
 						alt="stage"
-						class="w-full h-full"
+						class="w-full h-full border-x-2 border-x-white"
 					/>
 				</div>
 			</div>
 
 			<!-- notes -->
 			<div class="flex flex-col w-1/4 h-full">
-				<div class="flex flex-col w-full h-20">
+				<div class="flex flex-col w-full h-1/2 pl-4">
 					<h1 class="text-2xl font-bold">Notes</h1>
-					<p>Note1 hehea</p>
-					<p>Note2 heheha</p>
+					<p>Give dad the bone</p>
+					<p>more makeup</p>
+				</div>
+				<div
+					class="flex flex-col w-full h-1/2 border-t-2 border-t-white pl-4"
+				>
+					<h1 class="text-2xl font-bold">Issues</h1>
+					<p>Mics not working</p>
+					<p>Lighting off</p>
 				</div>
 			</div>
 		</div>
 
 		<!-- bottom bar -->
-		<div class="flex flex-row h-1/6 border-t-2 border-t-white">
-			<p>heh</p>
+		<div class="flex flex-row h-1/6 border-t-2 border-t-white w-full">
+			<button class="w-1/5 bg-red-600 text-2xl">Stop</button>
+			<button class="w-2/5 bg-yellow-300 text-2xl">Standbye</button>
+			<button class="w-2/5 bg-green-600 text-2xl">Go</button>
 		</div>
 	</body>
 

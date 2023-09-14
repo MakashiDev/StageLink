@@ -20,6 +20,11 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/index.css')
+def index_css():
+    return Response(render_template('index.css'), mimetype='text/css')
+
+
 @app.route("/show/<show_id>")
 def show_page(show_id):
     return render_template('show.html', show_id=show_id)
