@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" class="w-screen h-screen">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Stage Manager Dashboard</title>
+		<!-- Include Tailwind CSS -->
+		<script src="https://cdn.tailwindcss.com"></script>
+		<!-- Include Socket.io -->
+		<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+	</head>
+
+	<script>
+		const show_id = "{{ show_id }}";
+	</script>
+
+	<body
+		class="bg-gray-100 flex flex-row items-center justify-center dark:bg-gray-900 dark:text-white w-screen h-screen"
+	>
+		<!-- side bar -->
+		<div
+			class="flex flex-col w-1/4 md:w-1/6 border-r-2 border-r-white h-screen dark:bg-gray-800 bg-gray-300 mr-1"
+		>
+			<button
+				class="flex flex-col items-center justify-center w-full h-20 border-b-2 border-b-white dark:border-gray-700 dark:bg-gray-700 hover:bg-gray-200"
+			>
+				<!-- svg of stage with light above -->
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-6 w-6 dark:text-white"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M12 14l9-5-9-5-9 5 9 5z"
+					></path>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M12 14l9-5-9-5-9 5 9 5z"
+					></path>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M12 14l9-5-9-5-9 5 9 5z"
+					></path>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M12 14l9-5-9-5-9 5 9 5z"
+					></path>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M12 14l9-5-9-5-9 5 9 5z"
+					></path>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M12 14l9-5-9-5-9 5 9 5z"
+					></path>
+				</svg>
+				<p class="text-xs">Current Show</p>
+			</button>
+			<!-- Edit Show Button -->
+			<button
+				class="flex flex-col items-center justify-center w-full h-20 border-b-2 border-b-white dark:border-gray-700 dark:hover:bg-gray-700 hover:bg-gray-200"
+			>
+				<!-- svg gear -->
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-5 w-5 dark:text-white"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						d="M20.017 14.669L23 13.564l-.012-3.208-2.996-1.085a8.455 8.455 0 0 0-.437-1.05l1.329-2.893-2.277-2.26-2.886 1.351a8.396 8.396 0 0 0-1.052-.436L13.564 1l-3.208.012-1.085 2.996a8.485 8.485 0 0 0-1.05.437L5.328 3.116l-2.26 2.276L4.419 8.28a8.378 8.378 0 0 0-.436 1.052L1 10.436l.012 3.208 2.996 1.085a8.46 8.46 0 0 0 .437 1.05l-1.329 2.893 2.276 2.26 2.887-1.351a8.383 8.383 0 0 0 1.052.436L10.436 23l3.208-.012 1.085-2.996a8.478 8.478 0 0 0 1.05-.437l2.893 1.329 2.26-2.276-1.351-2.887a8.382 8.382 0 0 0 .436-1.052zm-.287 3.73l-1.275 1.285-2.694-1.238-.429.215a7.612 7.612 0 0 1-.928.385l-.452.156-1.01 2.789-1.81.007-1.03-2.779-.456-.151a7.394 7.394 0 0 1-.926-.385l-.43-.21-2.688 1.257-1.286-1.275 1.239-2.695-.216-.43a7.551 7.551 0 0 1-.386-.926l-.155-.452-2.79-1.01-.005-1.81 2.777-1.03.152-.456a7.46 7.46 0 0 1 .384-.927l.212-.43L4.27 5.601l1.275-1.285 2.694 1.238.429-.215a7.612 7.612 0 0 1 .928-.385l.452-.156 1.01-2.789 1.81-.007 1.03 2.779.456.151a7.35 7.35 0 0 1 .925.385l.43.211L18.4 4.27l1.285 1.275-1.239 2.695.216.43a7.551 7.551 0 0 1 .386.926l.155.452 2.79 1.01.005 1.81-2.777 1.03-.152.456a7.46 7.46 0 0 1-.384.927l-.212.43zM12 7.2a4.8 4.8 0 1 0 4.8 4.8A4.8 4.8 0 0 0 12 7.2zm0 8.6a3.8 3.8 0 1 1 3.8-3.8 3.804 3.804 0 0 1-3.8 3.8z"
+					/>
+				</svg>
+				<p class="text-xs">Edit Show</p>
+			</button>
+			<!-- New Show Button -->
+			<button
+				class="flex flex-col items-center justify-center w-full h-20 border-b-2 border-b-white dark:border-gray-700 dark:hover:bg-gray-700 hover:bg-gray-200"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-6 w-6 dark:text-white"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+					></path>
+				</svg>
+				<p class="text-xs">New Show</p>
+			</button>
+
+			<!-- toggle light/dark mode -->
+			<button
+				class="flex flex-col items-center justify-center w-full h-20 border-b-2 self-end border-b-white dark:border-gray-700 dark:hover:bg-gray-700 hover:bg-gray-200"
+			>
+				<!-- sun or moon depening on what it is -->
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-6 w-6 dark:text-white dark:block hidden"
+					fill="none"
+					viewBox="0 0 24 24 text-transparent"
+					stroke="currentColor"
+				>
+					<path
+						d="M12 21.8a9.796 9.796 0 0 1-1.245-19.513l1.286-.163-.843.984a8.285 8.285 0 0 0 8.519 13.383l1.252-.347-.696 1.096A9.755 9.755 0 0 1 12 21.8zM9.647 3.526a8.796 8.796 0 1 0 9.031 14.196 9.048 9.048 0 0 1-1.178.078A9.293 9.293 0 0 1 9.647 3.526z"
+					/>
+				</svg>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-6 w-6 dark:hidden text-white block"
+					fill="none"
+					viewBox="0 0 24 24 text-transparent"
+					stroke="currentColor"
+				>
+					<path
+						d="M19 12.5H22M3 12.5H6M12.5 6V3M12.5 22V19M17.3891 7.61091L19.5104 5.48959M5.48959 19.5104L7.61091 17.3891M7.61091 7.61091L5.48959 5.48959M19.5104 19.5104L17.3891 17.3891M16 12.5C16 14.433 14.433 16 12.5 16C10.567 16 9 14.433 9 12.5C9 10.567 10.567 9 12.5 9C14.433 9 16 10.567 16 12.5Z"
+					/>
+				</svg>
+				<p class="text-xs">Toggle Light/Dark Mode</p>
+			</button>
+		</div>
+
+		<!-- main content -->
+		<div class="flex flex-col w-3/4 md:w-5/6 h-screen">
+			<!-- top bar -->
+			<div class="flex flex-row w-full h-1/6 border-b-2 border-b-white">
+				<!-- show -->
+				<div class="flex flex-col w-1/2 h-full">
+					<h1 class="text-2xl font-bold" id="showName">
+						Addams Family
+					</h1>
+					<p class="text-xs" id="showType">Musical</p>
+				</div>
+				<!-- show info -->
+				<div class="flex flex-col w-1/2 h-full">
+					<h1 class="text-2xl font-bold" id="showAct">Act 1</h1>
+					<p class="text-xs" id="showScene">Scene 4</p>
+				</div>
+
+				<!-- clock -->
+				<div class="flex flex-col w-1/2 h-full">
+					<h1 class="text-2xl font-bold" id="timer">00:00:00</h1>
+					<p class="text-xs" id="clock">23:23</p>
+				</div>
+			</div>
+
+			<!-- main content -->
+			<div class="flex flex-row h-4/6" />
+			<!-- cues  -->
+			<div class="flex flex-col w-1/4 h-full">
+				<div class="flex flex-col w-full h-5/6">
+					<h1 class="text-2xl font-bold">Cues</h1>
+					<p>Blackout</p>
+					<p>Wenesday enters</p>
+					<p>Uncle Fester enters</p>
+					<p>Uncle Fester exits</p>
+					<p>Wenesday exits</p>
+				</div>
+				<!--  cue control -->
+				<div
+					class="flex place-self-end w-full h-1/6 border-t-2 border-t-white"
+				>
+					<button
+						class="w-1/2 dark:bg-gray-800 bg-gray-200 hover:dark:bg-gray-950 hover:bg-gray-300 ease-in-out duration-150"
+					>
+						Previous
+					</button>
+					<button
+						class="w-1/2 border-l-2 border-l-white dark:bg-gray-800 bg-gray-200 hover:dark:bg-gray-950 hover:bg-gray-300 ease-in-out duration-150"
+					>
+						Next
+					</button>
+				</div>
+			</div>
+
+			<!-- stage -->
+			<div class="flex flex-col w-2/4 h-full">
+				<div class="flex flex-col w-full h-full">
+					<img
+						src="{{ url_for('default_camera_feed') }}"
+						alt="stage"
+						class="w-full h-full border-x-2 border-x-white"
+					/>
+				</div>
+			</div>
+
+			<!-- notes -->
+			<div class="flex flex-col w-1/4 h-full">
+				<div class="flex flex-col w-full h-1/2 pl-4">
+					<h1 class="text-2xl font-bold">Notes</h1>
+					<p>Give dad the bone</p>
+					<p>more makeup</p>
+				</div>
+				<div
+					class="flex flex-col w-full h-1/2 border-t-2 border-t-white pl-4"
+				>
+					<h1 class="text-2xl font-bold">Issues</h1>
+					<p>Mics not working</p>
+					<p>Lighting off</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- bottom bar -->
+		<div class="flex flex-row h-1/6 border-t-2 border-t-white w-full">
+			<button class="w-1/5 bg-red-600 text-2xl">Stop</button>
+			<button class="w-2/5 bg-yellow-300 text-2xl">Standbye</button>
+			<button class="w-2/5 bg-green-600 text-2xl">Go</button>
+		</div>
+	</body>
+
+	<script defer>
+		const socket = io("http://localhost:5000");
+
+		const showName = document.getElementById("showName");
+		const showType = document.getElementById("showType");
+		const showAct = document.getElementById("showAct");
+		const showScene = document.getElementById("showScene");
+		const timer = document.getElementById("timer");
+		const clock = document.getElementById("clock");
+
+		socket.on("connect", () => {
+			console.log("connected");
+		});
+
+		async function startShow(showId) {
+			const show = await fetch(`/api/shows/${showId}/start`);
+			const showData = await show.json();
+			console.log(showData);
+
+			showName.innerText = showData.name;
+			showType.innerText = showData.type;
+			showAct.innerText = `Act ${showData.act}`;
+			showScene.innerText = `Scene ${showData.scene}`;
+		}
+
+		console.log(show_id);
+		if (show_id == "{{ show_id }}") {
+			console.error("show_id is null");
+			while (show_id == null) {
+				console.log("waiting for show_id");
+			}
+		} else {
+			console.log("show_id is not null");
+		}
+		startShow(show_id);
+	</script>
+
+	<script defer>
+		/* Clock */
+
+		function updateClock() {
+			const now = new Date();
+			const time = now.toLocaleTimeString();
+			clock.innerText = time;
+		}
+
+		setInterval(updateClock, 1000);
+
+		/* Timer */
+
+		let seconds = 0;
+		let minutes = 0;
+		let hours = 0;
+
+		function updateTimer() {
+			seconds++;
+			if (seconds == 60) {
+				seconds = 0;
+				minutes++;
+			}
+			if (minutes == 60) {
+				minutes = 0;
+				hours++;
+			}
+
+			const time = `${hours}:${minutes}:${seconds}`;
+			timer.innerText = time;
+		}
+
+		setInterval(updateTimer, 1000);
+	</script>
+
+	<script defer>
+		/* Dark Mode */
+
+		const toggle = document.querySelector("button");
+
+		toggle.addEventListener("click", () => {
+			document.body.classList.toggle("dark");
+			toggle.classList.toggle("dark");
+		});
+	</script>
+</html>

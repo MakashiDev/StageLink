@@ -29,6 +29,10 @@ def index_css():
 def show_page(show_id):
     return render_template('show.html', show_id=show_id)
 
+@app.route("/showold/<show_id>")
+def show_old_page(show_id):
+    return render_template('show_old.html', show_id=show_id)
+
 
 @app.route('/api/shows/<show_id>')
 def show(show_id):
