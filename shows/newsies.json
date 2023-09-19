@@ -1,62 +1,35 @@
 {
-    "name": "Newsies",
-    "type": "musical",
-    "slug": "newsies",
-    "id": 3,
-    "actCount": 2,
-    "currentAct": null,
-    "acts": [
-        {
-            "act": 1,
-            "totalCues": 0,
-            "currentCue": null,
-            "sceneCount": 1,
-            "currentScene": null,
-            "scenes": [
-                {
-                    "name": "Act 1 Scene 1",
-                    "scene": 1,
-                    "slug": "newsies_act_1_scene_1",
-                    "cueCount": 2,
-                    "currentCue": null,
-                    "cues": [
-                        {
-                            "name": "Cue 1",
-                            "slug": "newsies_scene_1_cue_1"
-                        },
-                        {
-                            "name": "Cue 2",
-                            "slug": "newsies_scene_1_cue_2"
-                        }
-                    ]
-                }
-            ],
-            "id": 1,
-            "slug": "newsies_act_1"
-        },
-        {
-            "act": 2,
-            "totalCues": 0,
-            "currentCue": null,
-            "sceneCount": 1,
-            "currentScene": null,
-            "scenes": [
-                {
-                    "name": "Act 2 Scene 1",
-                    "scene": 1,
-                    "slug": "newsies_act_2_scene_1",
-                    "cueCount": 1,
-                    "currentCue": null,
-                    "cues": [
-                        {
-                            "name": "fortnite is yummy",
-                            "slug": "newsies_scene_1_cue_1"
-                        }
-                    ]
-                }
-            ],
-            "id": 2,
-            "slug": "newsies_act_2"
-        }
-    ]
+	"name": "Newsies",
+	"type": "musical",
+	"slug": "newsies",
+	"acts": [
+		{
+			"scenes": [
+				{
+					"name": "Act 1 Scene 1",
+					"scene": 1,
+					"cues": [
+						{
+							"name": "Cue 1"
+						},
+						{
+							"name": "Cue 2"
+						}
+					]
+				}
+			]
+		},
+		{
+			"scenes": [
+				{
+					"name": "Act 2 Scene 1",
+					"cues": [
+						{
+							"name": "fortnite is yummy"
+						}
+					]
+				}
+			]
+		}
+	]
 }

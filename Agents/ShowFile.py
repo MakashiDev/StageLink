@@ -11,17 +11,13 @@ class ShowFile:
         self.slug = name.lower().replace(" ", "-")
         self.id = 1  # Initialize ID
         self.actCount = 0
-        self.currentAct = None
+        self.currentAct = 1
         self.acts = []
 
     def add_act(self, act_number):
         if 1 <= act_number <= self.actCount + 1:
             new_act = {
                 "act": act_number,
-                "totalCues": 0,
-                "currentCue": None,
-                "sceneCount": 0,
-                "currentScene": None,
                 "scenes": [],
             }
             self.acts.insert(act_number - 1, new_act)
@@ -41,8 +37,6 @@ class ShowFile:
                 "name": scene_name,
                 "scene": act["sceneCount"] + 1,
                 "slug": f"{self.slug}_scene_{act['sceneCount'] + 1}",
-                "cueCount": 0,
-                "currentCue": None,
                 "cues": [],
             }
             act["scenes"].append(scene)
@@ -206,39 +200,24 @@ class ShowFile:
             print(f"Act {act_number} does not exist.")
 
 
-# Example usage for Newsies:
-
-# Create a new show and save it to a file
-newsies = ShowFile("Newsies", "musical")
-newsies.add_act(1)
-newsies.add_scene(1, "Act 1 Scene 1")
-newsies.add_cue(1, 1, "Cue 1")
-newsies.add_cue(1, 1, "Cue 2")
-newsies.add_act(2)
-newsies.add_scene(2, "Act 2 Scene 1")
-newsies.add_cue(2, 1, "fortnite is yummy")
-newsies.save_to_file()
-
-
-""" # Load the show from the file
-loaded_newsies = ShowFile.load_from_file("newsies")
-if loaded_newsies:
-    print(loaded_newsies)
-else:
-    print("Show not found.")
-
-# Edit the loaded show
-loaded_newsies.edit_show(name="Newsies", type="Broadway")
-loaded_newsies.edit_act(1, new_act_number=2)  # Move Act 1 to Act 2 position
-loaded_newsies.edit_scene(2, 1, new_scene_name="Act 2 Scene 1")
-loaded_newsies.edit_cue(
-    2, 1, 1, new_cue_name="Opening Cue", new_cue_type="lighting")
-
-loaded_newsies.add_act(3)
-loaded_newsies.add_scene(3, "fortnite")
-loaded_newsies.add_cue(3, 1, "Cue 1")
-loaded_newsies.add_cue(3, 1, "fortnite is yumm3") """
-
-
-# Save the edited show to a new file
-# loaded_newsies.save_to_file()
+# Example usage for Camp Rock
+show = ShowFile("Camp Rock", "Musical")
+show.add_act(1)
+show.add_scene(1, "Camp Rock")
+show.add_cue(1, 1, "Camp Rock")
+show.add_cue(1, 1, "Camp Rock 2")
+show.add_cue(1, 1, "Camp Rock 3")
+show.add_scene(1, "Camp Star")
+show.add_cue(1, 2, "Camp Star")
+show.add_cue(1, 2, "Camp Star 2")
+show.add_cue(1, 2, "Camp Star 3")
+show.add_act(2)
+show.add_scene(2, "Camp Rock")
+show.add_cue(2, 1, "Camp Rock")
+show.add_cue(2, 1, "Camp Rock 2")
+show.add_cue(2, 1, "Camp Rock 3")
+show.add_scene(2, "Camp Star")
+show.add_cue(2, 2, "Camp Star")
+show.add_cue(2, 2, "Camp Star 2")
+show.add_cue(2, 2, "Camp Star 3")
+show.save_to_file()

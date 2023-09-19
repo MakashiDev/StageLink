@@ -7,12 +7,17 @@ from Agents.cameraAgent import CameraAgent
 from Agents.showAgent import ShowAgent
 
 
-app = Flask(__name__)
+app = Flask(__name__,
+            static_folder='public',
+            template_folder='templates'
+            )
 socketio = SocketIO(app)
 
 cameraAgent = CameraAgent()
 cameraAgent.app_context = app.app_context()
-showAgent = ShowAgent()
+show = ShowAgent()
+
+currentShow = None
 
 
 @app.route('/')
@@ -25,59 +30,68 @@ def index_css():
     return Response(render_template('index.css'), mimetype='text/css')
 
 
-@app.route("/show/<show_id>")
-def show_page(show_id):
-    return render_template('show.html', show_id=show_id)
-
-@app.route("/showold/<show_id>")
-def show_old_page(show_id):
-    return render_template('show_old.html', show_id=show_id)
+@app.route("/show/<show_slug>")
+def show_page(show_slug):
+    return render_template('show.html', show_slug=show_slug)
 
 
-@app.route('/api/shows/<show_id>')
-def show(show_id):
-    print(show_id)
-    show = showAgent.select_show(show_id)
-    showAgent.cues.set_show_id(show_id)
-    print(show)
+@app.route("/showold/<show_slug>")
+def show_old_page(show_slug):
+    return render_template('show_old.html', show_slug=show_slug)
+
+
+@app.route('/api/show/<show_slug>')
+def showHTML(show_slug):
+    print(show_slug)
+    show.select(show_slug)
+
     # return json.dumps(show)
-    return json.dumps(show)
+    return show.show
+
+
+@app.route('/api/show/<show_slug>/start')
+def startShow(show_slug):
+    print(show_slug)
+    show.select(show_slug)
+
+    # return json.dumps(show)
+    return show.show
 
 
 @app.route('/api/shows')
-def shows():
-    shows = showAgent.loadShows()
-    return json.dumps({"shows": shows})
+def showList():
+    print("Getting shows")
+    shows = show.load()
+    return json.dumps(shows)
 
 
-@app.route('/api/shows/<show_id>/cues')
-def cues(show_id):
-    cues = showAgent.cues.get_list()
-    return json.dumps(cues)
+@socketio.on('get/shows')
+def get_shows():
+    list = showList()
+    emit('return/shows', list)
 
 
-@app.route('/api/shows/<show_id>/cues/<cue_id>')
-def cue(show_id, cue_id):
-    cue = showAgent.cues.get(cue_id)
-    return json.dumps(cue)
+# ? Show stuff
+
+@socketio.on('select/show')
+def select_show(show_slug):
+    print("Selecting show: " + show_slug)
+    show.select(show_slug)
+    emit('return/show', show.show)
 
 
-@app.route('/api/shows/<show_id>/cues/next')
-def next_cue(show_id, cue_id):
-    showAgent.cues.next()
-    return json.dumps(showAgent.cues.get_current())
+@app.route('/select/show/<show_slug>')
+def select_show_page(show_slug):
+    print("Selecting show: " + show_slug)
+    try:
+        show.select(show_slug)
+        return json.dumps(show.show)
+    except show.ShowNotFound as e:
+        print(e)
+        return e.message, 404
 
 
-@app.route('/api/shows/<show_id>/cues/previous')
-def previous_cue(show_id, cue_id):
-    showAgent.cues.previous()
-    return json.dumps(showAgent.cues.get_current())
-
-
-@app.route('/api/shows/<show_id>/start')
-def start_show(show_id):
-    return json.dumps(showAgent.start_show(show_id))
-
+# ? Camera stuff
 
 @app.route('/camera_feed/<int:index>')
 def camera_feed(index=0):
@@ -98,8 +112,6 @@ def camera_feeds():
 @socketio.on('connect')
 def on_connect():
     print('Client connected')
-
-# Camera feed
 
 
 if __name__ == '__main__':

@@ -1,0 +1,72 @@
+{
+	"name": "Camp Rock",
+	"type": "Musical",
+	"slug": "camp-rock",
+	"id": 3,
+	"acts": [
+		{
+			"scenes": [
+				{
+					"name": "Camp Rock",
+					"cues": [
+						{
+							"name": "Camp Rock"
+						},
+						{
+							"name": "Camp Rock 2"
+						},
+						{
+							"name": "Camp Rock 3"
+						}
+					]
+				},
+				{
+					"name": "Camp Star",
+					"cues": [
+						{
+							"name": "Camp Star"
+						},
+						{
+							"name": "Camp Star 2"
+						},
+						{
+							"name": "Camp Star 3"
+						}
+					]
+				}
+			]
+		},
+		{
+			"scenes": [
+				{
+					"name": "Camp Rock",
+					"cues": [
+						{
+							"name": "Camp Rock"
+						},
+						{
+							"name": "Camp Rock 2"
+						},
+						{
+							"name": "Camp Rock 3"
+						}
+					]
+				},
+				{
+					"name": "Camp Star",
+					"cues": [
+						{
+							"name": "Camp Star"
+						},
+						{
+							"name": "Camp Star 2"
+						},
+						{
+							"name": "Camp Star 3"
+						}
+					]
+				}
+			]
+		}
+	]
+}
