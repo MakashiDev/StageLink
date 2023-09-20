@@ -2,21 +2,28 @@
 	"name": "Camp Rock",
 	"type": "Musical",
 	"slug": "camp-rock",
-	"id": 3,
 	"acts": [
 		{
+			"name": "Act 1",
 			"scenes": [
 				{
 					"name": "Camp Rock",
 					"cues": [
 						{
-							"name": "Camp Rock"
+							"name": "This Is Me",
+							"type": "Sound"
 						},
 						{
-							"name": "Camp Rock 2"
+							"name": "Mitchie Enters",
+							"type": "Stage"
 						},
 						{
-							"name": "Camp Rock 3"
+							"name": "Mitchie Sings",
+							"type": "Sound"
+						},
+						{
+							"name": "Mitchie Exits",
+							"type": "Stage"
 						}
 					]
 				},
@@ -24,31 +31,46 @@
 					"name": "Camp Star",
 					"cues": [
 						{
-							"name": "Camp Star"
+							"name": "Camp Star Enters",
+							"type": "Stage"
 						},
 						{
-							"name": "Camp Star 2"
+							"name": "Camp Star Sings",
+							"type": "Sound"
 						},
 						{
-							"name": "Camp Star 3"
+							"name": "Camp Star Exits",
+							"type": "Stage"
 						}
 					]
 				}
 			]
 		},
 		{
+			"name": "Act 2",
 			"scenes": [
 				{
 					"name": "Camp Rock",
 					"cues": [
 						{
-							"name": "Camp Rock"
+							"name": "Camp Rock Enters",
+							"type": "Stage"
 						},
 						{
-							"name": "Camp Rock 2"
+							"name": "Camp Rock Sings",
+							"type": "Sound"
 						},
 						{
-							"name": "Camp Rock 3"
+							"name": "Camp Rock Exits",
+							"type": "Stage"
+						},
+						{
+							"name": "Blackout",
+							"type": "Lighting"
+						},
+						{
+							"name": "Final Jam Begins",
+							"type": "Stage"
 						}
 					]
 				},
@@ -56,17 +78,28 @@
 					"name": "Camp Star",
 					"cues": [
 						{
-							"name": "Camp Star"
+							"name": "Camp Star Enters",
+							"type": "Stage"
 						},
 						{
-							"name": "Camp Star 2"
+							"name": "Camp Star Sings",
+							"type": "Sound"
 						},
 						{
-							"name": "Camp Star 3"
+							"name": "Camp Star Exits",
+							"type": "Stage"
 						}
 					]
+				},
+				{
+					"name": "Final Jam",
+					"cues": []
 				}
 			]
+		},
+		{
+			"name": "Act 3",
+			"scenes": []
 		}
 	]
 }

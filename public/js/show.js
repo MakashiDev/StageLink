@@ -224,6 +224,10 @@ class Cues {
 		return this.cueIndex;
 	}
 
+	getAll() {
+		return this.cues;
+	}
+
 	/**
 	 * Get the current cue.
 	 * @returns {object} - The current cue object.
@@ -287,10 +291,11 @@ const showAct = document.getElementById("show-act");
 const showScene = document.getElementById("show-scene");
 
 const show = new Show(); // Create a new show
-const selectedShow = show.loadFromWeb("newsies").then((result) => {
+const selectedShow = show.loadFromWeb(show_slug).then((result) => {
 	console.log("SHOW LOADED BBG");
 	showName.innerText = show.name;
 	showType.innerText = show.type;
 	showAct.innerText = `Act ${show.acts.actIndex}`;
 	showScene.innerText = `Scene ${show.acts.scene.sceneIndex}`;
+	console.log(show.acts.scene.cue.getAll());
 });
