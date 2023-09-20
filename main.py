@@ -30,6 +30,11 @@ def index_css():
     return Response(render_template('index.css'), mimetype='text/css')
 
 
+@app.route("/validate")
+def validate():
+    return render_template('validate.html')
+
+
 @app.route("/show/<show_slug>")
 def show_page(show_slug):
     return render_template('show.html', show_slug=show_slug)

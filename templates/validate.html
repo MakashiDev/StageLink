@@ -33,6 +33,7 @@
 				Display
 			</button>
 			<div id="validationResult" class="mt-4 text-red-500"></div>
+			<div id="error" class="mt-4 text-red-500"></div>
 			<div id="showResult" class="mt-4"></div>
 		</div>
 
@@ -110,10 +111,19 @@
 							validationResult.textContent = "JSON is valid!";
 							validationResult.classList.remove("text-red-500");
 							validationResult.classList.add("text-green-500");
+							document.getElementById("error").textContent = "";
 						} else {
 							validationResult.textContent = "JSON is not valid.";
 							validationResult.classList.remove("text-green-500");
 							validationResult.classList.add("text-red-500");
+							const validationErrors = ajv.errorsText(
+								validate.errors,
+								{
+									separator: "\n",
+								}
+							);
+							document.getElementById("error").textContent =
+								validationErrors;
 						}
 					} catch (error) {
 						validationResult.textContent = "Invalid JSON format.";
