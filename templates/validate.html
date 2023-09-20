@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Show File Viewer & Validator</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css"
+			rel="stylesheet"
+		/>
+	</head>
+
+	<body class="bg-gray-200 p-4">
+		<div class="max-w-2xl mx-auto bg-white p-4 rounded-md shadow-md">
+			<h1 class="text-2xl font-semibold mb-4">
+				Show File Viewer & Validator
+			</h1>
+			<textarea
+				id="jsonInput"
+				class="w-full h-40 border p-2 mb-4 rounded-md"
+				placeholder="Paste your JSON show file here"
+			></textarea>
+			<button
+				id="validateButton"
+				class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md mr-2"
+			>
+				Validate
+			</button>
+			<button
+				id="displayButton"
+				class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md"
+			>
+				Display
+			</button>
+			<div id="validationResult" class="mt-4 text-red-500"></div>
+			<div id="showResult" class="mt-4"></div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ajv/6.12.6/ajv.min.js"></script>
+		<script>
+			// JSON Schema for validation
+			const schema = {
+				type: "object",
+				properties: {
+					name: {
+						type: "string",
+					},
+					type: {
+						type: "string",
+					},
+					slug: {
+						type: "string",
+					},
+					acts: {
+						type: "array",
+						items: {
+							type: "object",
+							properties: {
+								scenes: {
+									type: "array",
+									items: {
+										type: "object",
+										properties: {
+											name: {
+												type: "string",
+											},
+											cues: {
+												type: "array",
+												items: {
+													type: "object",
+													properties: {
+														name: {
+															type: "string",
+														},
+														type: {
+															type: "string",
+														},
+													},
+													required: ["name", "type"],
+												},
+											},
+										},
+										required: ["name", "cues"],
+									},
+								},
+							},
+							required: ["scenes"],
+						},
+					},
+				},
+				required: ["name", "type", "slug", "acts"],
+			};
+
+			// Validate the JSON against the schema
+			document
+				.getElementById("validateButton")
+				.addEventListener("click", () => {
+					const jsonInput =
+						document.getElementById("jsonInput").value;
+					const validationResult =
+						document.getElementById("validationResult");
+
+					try {
+						const jsonData = JSON.parse(jsonInput);
+						const ajv = new Ajv();
+						const validate = ajv.compile(schema);
+						const valid = validate(jsonData);
+
+						if (valid) {
+							validationResult.textContent = "JSON is valid!";
+							validationResult.classList.remove("text-red-500");
+							validationResult.classList.add("text-green-500");
+						} else {
+							validationResult.textContent = "JSON is not valid.";
+							validationResult.classList.remove("text-green-500");
+							validationResult.classList.add("text-red-500");
+						}
+					} catch (error) {
+						validationResult.textContent = "Invalid JSON format.";
+						validationResult.classList.remove("text-green-500");
+						validationResult.classList.add("text-red-500");
+					}
+				});
+
+			// Display the JSON
+			document
+				.getElementById("displayButton")
+				.addEventListener("click", () => {
+					const jsonInput =
+						document.getElementById("jsonInput").value;
+					const showResult = document.getElementById("showResult");
+
+					try {
+						const jsonData = JSON.parse(jsonInput);
+						showResult.textContent = JSON.stringify(
+							jsonData,
+							null,
+							2
+						);
+					} catch (error) {
+						showResult.textContent = "Invalid JSON format.";
+					}
+				});
+		</script>
+	</body>
+</html>

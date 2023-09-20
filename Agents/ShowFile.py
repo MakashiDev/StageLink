@@ -17,7 +17,6 @@ class ShowFile:
     def add_act(self, act_number):
         if 1 <= act_number <= self.actCount + 1:
             new_act = {
-                "act": act_number,
                 "scenes": [],
             }
             self.acts.insert(act_number - 1, new_act)
@@ -78,16 +77,6 @@ class ShowFile:
             if scene["scene"] == scene_number:
                 return scene
         return None
-
-    def update_ids_and_slugs(self):
-        self.id = 1
-        for act in self.acts:
-            act["id"] = self.id
-            act["slug"] = f"{self.slug}_act_{self.id}"
-            self.id += 1
-
-            for scene in act["scenes"]:
-                scene["slug"] = f"{act['slug']}_scene_{scene['scene']}"
 
     def __str__(self):
         return str({
