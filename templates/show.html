@@ -194,13 +194,17 @@
 			</div>
 		</div>
 		<div class="w-screen md:mt-8">
-			<div class="mb-8 w-screen grid grid-cols-3">
-				<div class="flex place-content-center items-center [&_h1]:m-2">
+			<div class="mb-8 w-screen flex flex-row justify-center">
+				<div
+					class="flex place-content-center items-center w-1/4 [&_h1]:m-2"
+				>
 					<h1 class="text-xl font-bold text-center">~</h1>
-					<h1 class="text-xl font-bold text-center">Notes</h1>
+					<h1 class="text-xl font-bold text-center">Cues</h1>
 					<h1 class="text-xl font-bold text-center">~</h1>
 				</div>
-				<div class="flex place-content-center items-center [&_h1]:m-2">
+				<div
+					class="flex place-content-center items-center w-2/4 [&_h1]:m-2"
+				>
 					<h1 class="text-xl font-bold text-center" id="show-act">
 						Placeholder
 					</h1>
@@ -213,19 +217,23 @@
 						Placeholder
 					</h1>
 				</div>
-				<div class="flex place-content-center items-center [&_h1]:m-2">
+				<div
+					class="flex place-content-center items-center w-1/4 [&_h1]:m-2"
+				>
 					<h1 class="text-xl font-bold text-center">~</h1>
-					<h1 class="text-xl font-bold text-center">Cues</h1>
+					<h1 class="text-xl font-bold text-center">Notes</h1>
 					<h1 class="text-xl font-bold text-center">~</h1>
 				</div>
 			</div>
 			<div class="flex place-content-center">
+				<div id="cues" class="w-1/4"></div>
 				<!-- {{ url_for('default_camera_feed') }} -->
 				<img
 					src="/default_camera_feed"
 					alt="stage-view"
-					class="rounded-lg w-[650px] h-[450px] border-2 border-slate-700"
+					class="rounded-lg aspect-[21/10] w-2/4 border-2 border-slate-700"
 				/>
+				<div id="notes" class="w-1/4"></div>
 			</div>
 		</div>
 
@@ -244,7 +252,9 @@
 		const timer = document.getElementById("show-elapsed-time");
 		const clock = document.getElementById("clock");
 		const serverStat = document.getElementById("serverStat");
+	</script>
 
+	<script defer>
 		socket.on("connect", () => {
 			console.log("connected");
 			serverStat.innerText = "Connected";
