@@ -60,10 +60,10 @@ class Acts {
 	 * Load the initial act and scene.
 	 */
 	load() {
-		this.act = this.show.acts;
-		this.actCount = this.act.length;
+		this.acts = this.show.acts;
+		this.actCount = this.acts.length;
 		this.actIndex = 1;
-		this.currentAct = this.act[this.actIndex - 1];
+		this.currentAct = this.acts[this.actIndex - 1];
 		this.scene = new Scenes(this.get());
 	}
 
@@ -77,7 +77,9 @@ class Acts {
 		} else {
 			this.actIndex = this.actCount;
 		}
-		return this.actIndex;
+		this.currentAct = this.acts[this.actIndex - 1];
+		this.scene = new Scenes(this.get());
+		return this.currentAct;
 	}
 
 	/**
@@ -90,7 +92,9 @@ class Acts {
 		} else {
 			this.actIndex = 1;
 		}
-		return this.actIndex;
+		this.currentAct = this.acts[this.actIndex - 1];
+		this.scene = new Scenes(this.get());
+		return this.currentAct;
 	}
 
 	/**
@@ -141,7 +145,9 @@ class Scenes {
 		} else {
 			this.sceneIndex = this.sceneCount;
 		}
-		return this.sceneIndex;
+		this.currentScene = this.scenes[this.sceneIndex - 1];
+		this.cue = new Cues(this.get());
+		return this.currentScene;
 	}
 
 	/**
@@ -154,7 +160,9 @@ class Scenes {
 		} else {
 			this.sceneIndex = 1;
 		}
-		return this.sceneIndex;
+		this.currentScene = this.scenes[this.sceneIndex - 1];
+		this.cue = new Cues(this.get());
+		return this.currentScene;
 	}
 
 	/**
@@ -192,6 +200,7 @@ class Cues {
 		this.cueCount = this.cues.length;
 		this.cueIndex = 1;
 		this.currentCue = this.cues[this.cueIndex - 1];
+		this.updateCueList();
 	}
 
 	/**
@@ -206,6 +215,7 @@ class Cues {
 			// Cue not found
 			CueNotFound(this.cue, this.cueIndex, this.cueCount);
 		}
+		this.currentCue = this.cues[this.cueIndex - 1];
 		return this.cueIndex;
 	}
 
@@ -221,11 +231,67 @@ class Cues {
 			// Cue not found
 			CueNotFound(this.cue, this.cueIndex, this.cueCount);
 		}
+		this.currentCue = this.cues[this.cueIndex - 1];
 		return this.cueIndex;
 	}
 
+	/**
+	 * Get all cues.
+	 * @returns {object} - All cue objects.
+	 * @todo - Add a filter to get only cues with a certain type.
+	 * @todo - Add a filter to get only cues with a certain name.
+	 * @todo - Add a filter to get only cues with a certain index.
+	 */
 	getAll() {
 		return this.cues;
+	}
+
+	updateCueList() {
+		let cueList = document.getElementById("cue-list");
+		let cues = this.getAll();
+
+		const baseCueClasses = "flex justify-between items-center w-full px-5";
+
+		const stageCueClasses = "bg-purple-500 bg-opacity-50";
+		const stageCueIconClasses = "la la-route";
+
+		const soundCueClasses = "bg-red-500 bg-opacity-50";
+		const soundCueIconClasses = "las la-microphone-alt";
+
+		const lightCueClasses = "bg-green-500 bg-opacity-50";
+		const lightCueIconClasses = "las la-lightbulb";
+
+		cueList.innerHTML = "";
+		cues.forEach((cue) => {
+			let cueItem = document.createElement("li");
+
+			let span = document.createElement("span");
+			span.innerHTML = cue.name;
+			cueItem.appendChild(span);
+
+			let icon = document.createElement("i");
+
+			cueItem.className = baseCueClasses;
+			switch (cue.type.toLowerCase()) {
+				case "stage":
+					cueItem.className += ` ${stageCueClasses}`;
+					icon.className = stageCueIconClasses;
+					break;
+				case "sound":
+					cueItem.className += ` ${soundCueClasses}`;
+					icon.className = soundCueIconClasses;
+					break;
+				case "lighting":
+					cueItem.className += ` ${lightCueClasses}`;
+					icon.className = lightCueIconClasses;
+					break;
+				default:
+					break;
+			}
+
+			cueItem.appendChild(icon);
+			cueList.appendChild(cueItem);
+		});
 	}
 
 	/**
