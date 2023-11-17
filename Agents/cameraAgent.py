@@ -19,15 +19,16 @@ class CameraAgent:
         print(operation_system)  # nt = windows, posix = linux or mac
         if operation_system == "nt":
             print("Windows")
-            camera = cv2.VideoCapture(index + cv2.CAP_DSHOW)
+            camera = cv2.VideoCapture(index, cv2.CAP_DSHOW)
         else:
             print("Linux or Mac")
             camera = cv2.VideoCapture(index)
 
-        camera.set(cv2.CAP_PROP_FPS, 30)
+        camera.set(cv2.CAP_PROP_FPS, 60)
         while True:
             success, frame = camera.read()  # read the camera frame
             if not success:
+                print("Failed to access camera feed!")
                 break
             else:
                 frame = cv2.resize(frame, (462, 220))
@@ -46,7 +47,7 @@ class CameraAgent:
             operation_system = os.name
             if operation_system == "nt":
                 print("Windows")
-                camera = cv2.VideoCapture(i + cv2.CAP_DSHOW)
+                camera = cv2.VideoCapture(i, cv2.CAP_DSHOW)
             else:
                 print("Linux or Mac")
                 camera = cv2.VideoCapture(i)
