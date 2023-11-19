@@ -1,241 +1,73 @@
 <!DOCTYPE html>
-<html lang="en" class="w-screen h-screen">
-
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Stage Manager Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | StageLink</title>
     <!-- Include Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Include Socket.io -->
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-    <!-- Include FlowBite for Dropdowns -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" />
     <link rel="stylesheet" href="/public/css/index.css">
     <script defer src="/public/js/show.js"></script>
 </head>
-
-<script>
-    const show_slug = "{{ show_slug }}";
-</script>
-
-<body class="bg-gray-100 dark:bg-slate-800 dark:text-white w-screen h-screen">
-    <div class="grid grid-cols-3 w-screen h-1/6 border-b-2 border-slate-700" id="show-info">
-        <div class="flex place-content-center border-r-2 border-slate-700" id="show-info">
-            <div class="grid grid-cols-1 md:h-32 place-content-center">
-                <h1 class="text-4xl font-bold text-center" id="show-title">
-                    Show Title
-                </h1>
-                <h1 class="text-xl font-bold text-center" id="show-elapsed-time">
-                    00:00:00
-                </h1>
+<body class="bg-slate-950">
+    <!-- Toolbar -->
+    <div class="bg-slate-900 md:grid md:grid-cols-3 hidden w-full md:h-[136px] border-slate-700 md:border-b-[3px]" id="toolbar">
+        <!-- Show Information -->
+        <div class="" id="show-info">
+            <div class="h-[136px] grid grid-cols-1 place-content-center">
+                <p class="font-semibold text-4xl text-center" id="show-title">Show Title</p>
+                <p class="font-semibold text-xl text-center" id="show-elapsed-time">00:00:00</p>
             </div>
         </div>
 
-        <div class="flex place-content-center items-center border-r-2 border-slate-700">
-            <div class="inline-flex rounded-md shadow-sm [&_button]:w-24 [&_button]:h-16" role="group">
-                <button type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white rounded-l-lg dark:bg-green-500 dark:text-white dark:hover:text-white dark:hover:bg-green-400 duration-150">
-						Go
-					</button>
-                <button type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white dark:bg-yellow-500 dark:text-white dark:hover:text-white dark:hover:bg-yellow-400 duration-150">
-						Standby
-					</button>
-                <button type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white rounded-r-md dark:bg-red-500 dark:text-white dark:hover:text-white dark:hover:bg-red-400 duration-150">
-						Stop
-					</button>
+        <!-- Cue Buttons -->
+        <div class="flex place-content-center items-center border-slate-700 md:border-x-[3px]" id="cue-buttons">
+            <div class="md:flex [&_input]:transition-all [&_input]:font-semibold [&_input]:text-xl">
+                <input value="Stop" class="md:w-[5.749vw] md:h-[81px] rounded-l-[24px] bg-red-500 hover:bg-red-400" type="button" id="stop">
+                <input value="Standby" class="md:w-[129px] md:h-[81px] bg-amber-500 hover:bg-amber-400" type="button" id="standby">
+                <input value="Go" class="md:w-[5.749vw] md:h-[81px] rounded-r-[24px] bg-green-500 hover:bg-green-400" type="button" id="go">
             </div>
         </div>
 
-        <div class="flex place-content-center items-center">
-            <button id="multiLevelDropdownButton" data-dropdown-toggle="dropdown" class="text-white bg-slate-700 hover:bg-slate-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center" type="button">
-					Settings
-					<svg
-						class="w-2.5 h-2.5 ml-2.5"
-						aria-hidden="true"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 10 6"
-					>
-						<path
-							stroke="currentColor"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="m1 1 4 4 4-4"
-						/>
-					</svg>
-				</button>
-            <!-- Dropdown menu -->
-            <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="multiLevelDropdownButton">
-                    <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Account</a
-							>
-						</li>
-						<li>
-							<a
-								href="#"
-								class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-								>Switch Theme</a
-							>
-						</li>
-						<li>
-							<button
-								id="doubleDropdownButton"
-								data-dropdown-toggle="doubleDropdown"
-								data-dropdown-placement="right-start"
-								type="button"
-								class="flex items-center justify-between w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-							>
-								Show Settings<svg
-									class="w-2.5 h-2.5 ml-2.5"
-									aria-hidden="true"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 6 10"
-								>
-									<path
-										stroke="currentColor"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="m1 9 4-4-4-4"
-									/>
-								</svg>
-							</button>
-							<div
-								id="doubleDropdown"
-								class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-							>
-								<ul
-									class="py-2 text-sm text-gray-700 dark:text-gray-200"
-									aria-labelledby="doubleDropdownButton"
-								>
-									<li>
-										<a
-											href="#"
-											class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-											>Select Show</a
-										>
-									</li>
-									<li>
-										<a
-											href="#"
-											class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-											>Create Show</a
-										>
-									</li>
-									<li>
-										<a
-											href="#"
-											class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-											>Modify Show</a
-										>
-									</li>
-								</ul>
-							</div>
-						</li>
-						<li>
-							<a
-								href="#"
-								class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-								>Sign out</a
-							>
-						</li>
-					</ul>
-				</div>
-				<h1
-					class="text-xl font-bold text-center m-5 w-32 h-6"
-					id="clock"
-				>
-					00:00:00
-				</h1>
-			</div>
-		</div>
-		<div class="w-screen md:pt-8 h-5/6">
-			<div class="mb-8 w-screen flex flex-row justify-center h-[7%]">
-				<div
-					class="flex place-content-center items-center w-1/4 [&_h1]:m-2"
-				>
-					<h1 class="text-xl font-bold text-center">~</h1>
-					<h1 class="text-xl font-bold text-center">Cues</h1>
-					<h1 class="text-xl font-bold text-center">~</h1>
-				</div>
-				<div
-					class="flex place-content-center items-center w-2/4 [&_h1]:m-2"
-				>
-					<h1 class="text-xl font-bold text-center" id="show-act">
-						Placeholder
-					</h1>
-					<h1 class="text-xl font-bold text-center">•</h1>
-					<h1 class="text-xl font-bold text-center" id="show-scene">
-						Placeholder
-					</h1>
-					<h1 class="text-xl font-bold text-center">•</h1>
-					<h1 class="text-xl font-bold text-center" id="show-type">
-						Placeholder
-					</h1>
-				</div>
-				<div
-					class="flex place-content-center items-center w-1/4 [&_h1]:m-2"
-				>
-					<h1 class="text-xl font-bold text-center">~</h1>
-					<h1 class="text-xl font-bold text-center">Notes</h1>
-					<h1 class="text-xl font-bold text-center">~</h1>
-				</div>
-			</div>
-			<!-- div  that takes up remaing space in parent div-->
-			<div class="flex place-content-center h-[93%]">
-				<div id="cues" class="w-1/4 h-full">
-					<!-- list -->
-					<ul
-						class="overflow-y-scroll h-full list-none flex flex-col justify-start items-center  "
-						id="cue-list"
-					>
-						<li id="stageCue" class="flex justify-between items-center w-full px-5 bg-purple-500 bg-opacity-50">
-							<span> Mitchie Exits</span> <i class="las la-route"></i></i>
+        <!-- Misc Stuff -->
+        <div class="" id="misc-info">
+            <div class="h-[136px] flex place-content-center items-center">
+                <p class="font-semibold text-4xl text-center" id="clock">00:00:00 AM/PM</p>
+            </div>
+        </div>
+    </div>
 
-						</li>
-						<li id="soundCue" class="flex justify-between items-center w-full px-5 bg-red-500 bg-opacity-50">
-							<span>This is me</span><i class="las la-microphone-alt"></i>
+    <div class="flex h-[calc(100vh-136px)]" id="container">
+        <!-- Cues List -->
+        <div class="bg-slate-900 hidden md:block md:h-[calc(100vh-136px)] md:w-[350px] border-slate-700 md:border-r-[3px]" id="cues-list">
+            <div class="h-[75px] flex place-content-center items-center">
+                <p class="font-semibold text-4xl text-center">• Cues •</p>
+            </div>
+            <div class="w-[calc(350px-3px)] h-[calc(100vh-(350px-(70px*2)+1px))] overflow-y-scroll" id="cues">
+                <div class="h-[40px] bg-purple-900 border-slate-700 md:border-t-[3px]">Lighting</div>
+                <div class="h-[40px] bg-blue-900 border-slate-700 md:border-t-[3px]">Sound</div>
+                <div class="h-[40px] bg-rose-900 border-slate-700 md:border-t-[3px]">Spotlight</div>
+                <div class="h-[40px] bg-green-900 border-slate-700 md:border-t-[3px]">Sets</div>
+            </div>
+        </div>
 
-						</li>
-						<li id="lightCue" class="flex justify-between items-center w-full px-5 bg-green-500 bg-opacity-50">
-							<span>Blackout</span> <i class="las la-lightbulb"></i>
-						</li>
-					</ul>
-				</div>
-				<!-- {{ url_for('default_camera_feed') }} -->
-				<div class="w-2/4">
-					<img
-						src="/default_camera_feed"
-						alt="stage-view"
-						class="rounded-lg aspect-[21/10] w-full border-2 border-slate-700"
-					/>
-				</div>
-				<div id="notes" class="w-1/4"></div>
-			</div>
-		</div>
+        <!-- Camera Feed -->
+        <img src="/default_camera_feed" class="w-[calc(100vw-350px)] md:h-[calc(100vh-136px)]" id="camera-feed">
 
-		<!-- server status in bottom left corner -->
-		<div class="fixed bottom-0 left-0 m-[10px]">
-			<div class="grid grid-cols-1 md:h-20 place-content-center">
-				<p class="text-xs text-center">Server Status</p>
-				<p class="text-xs text-center" id="serverStat">Connecting</p>
-			</div>
-		</div>
-	</body>
+        <!-- Notes Bar (Hidden) -->
+        <!-- <div class="bg-slate-900 hidden md:flex md:h-[151px] md:w-[calc(100%-297px)] border-slate-700 md:border-t-[3px]" id="notes">
+            <div class="h-[75px] w-[200px] flex place-content-center items-center">
+                <p class="font-semibold text-4xl text-center">• Notes •</p>
+            </div>
+        </div> -->
+    </div>
+    
+    <!-- Socket.io -->
+    <script defer>
+        const socket = io("http://localhost:5000");
 
-	<script defer>
-		const socket = io("http://localhost:5000");
-
-		const timer = document.getElementById("show-elapsed-time");
-		const clock = document.getElementById("clock");
-		const serverStat = document.getElementById("serverStat");
-	</script>
-
-	<script defer>
 		socket.on("connect", () => {
 			console.log("connected");
 			serverStat.innerText = "Connected";
@@ -246,69 +78,63 @@
 		});
 	</script>
 
-	<script defer>
-		/* Clock */
+    <!-- Clock/Timer -->
+    <script defer>
+		const timer = document.getElementById("show-elapsed-time");
+		const clock = document.getElementById("clock");
+		const serverStat = document.getElementById("serverStat");
 
-		function updateClock() {
-			const now = new Date();
-			const time = now.toLocaleTimeString();
-			clock.innerText = time;
-		}
+        /* Clock */
 
-		setInterval(updateClock, 1000);
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString();
+            clock.innerText = time;
+        }
 
-		/* Timer */
+        setInterval(updateClock, 1000);
 
-		let seconds = 0;
-		let minutes = 0;
-		let hours = 0;
+        /* Timer */
 
-		function updateTimer() {
-			seconds++;
-			if (seconds == 60) {
-				seconds = 0;
-				minutes++;
-			}
-			if (minutes == 60) {
-				minutes = 0;
-				hours++;
-				hours = `0${hours}`;
-			}
+        let seconds = 0;
+        let minutes = 0;
+        let hours = 0;
 
-			if (seconds.toString().split(``).length == 1) {
-				seconds = `0${seconds}`;
-			} else {
-				seconds = seconds.toString().trimStart();
-			}
+        function updateTimer() {
+            seconds++;
+            if (seconds == 60) {
+                seconds = 0;
+                minutes++;
+            }
+            if (minutes == 60) {
+                minutes = 0;
+                hours++;
+                hours = `0${hours}`;
+            }
 
-			if (minutes.toString().split(``).length == 1) {
-				minutes = `0${minutes}`;
-			} else {
-				minutes = minutes.toString().trimStart();
-			}
+            if (seconds.toString().split(``).length == 1) {
+                seconds = `0${seconds}`;
+            } else {
+                seconds = seconds.toString().trimStart();
+            }
 
-			if (hours.toString().split(``).length == 1) {
-				hours = `0${hours}`;
-			} else {
-				minutes = minutes.toString().trimStart();
-			}
+            if (minutes.toString().split(``).length == 1) {
+                minutes = `0${minutes}`;
+            } else {
+                minutes = minutes.toString().trimStart();
+            }
 
-			const time = `${hours}:${minutes}:${seconds}`;
-			timer.innerText = time;
-		}
+            if (hours.toString().split(``).length == 1) {
+                hours = `0${hours}`;
+            } else {
+                minutes = minutes.toString().trimStart();
+            }
 
-		setInterval(updateTimer, 1000);
-	</script>
+            const time = `${hours}:${minutes}:${seconds}`;
+            timer.innerText = time;
+        }
 
-	<script defer>
-		/* Dark Mode */
-
-		const toggle = document.querySelector("button");
-
-		toggle.addEventListener("click", () => {
-			document.body.classList.toggle("dark");
-			toggle.classList.toggle("dark");
-		});
-	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
 </html>
