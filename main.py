@@ -43,7 +43,7 @@ def show_page(show_slug):
 
 @app.route("/showold/<show_slug>")
 def show_old_page(show_slug):
-    return render_template('show_old.html', show_slug=show_slug)
+    return render_template('show_bad.html', show_slug=show_slug)
 
 
 @app.route('/api/show/<show_slug>')
