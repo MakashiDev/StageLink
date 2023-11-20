@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, redirect
 from flask_socketio import SocketIO, emit
 import json
 import cv2
@@ -17,17 +17,18 @@ cameraAgent = CameraAgent()
 cameraAgent.app_context = app.app_context()
 show = ShowAgent()
 
-currentShow = None
+selectedShow = None
+showStarted = False
 
 
 @app.route('/')
 def index():
+    return render_template('client.html', show_slug=selectedShow)
+
+
+@app.route('/shows/')
+def selectShow():
     return render_template('index.html')
-
-
-@app.route('/index.css')
-def index_css():
-    return Response(render_template('index.css'), mimetype='text/css')
 
 
 @app.route("/validate")
@@ -78,11 +79,21 @@ def get_shows():
 
 # ? Show stuff
 
-@socketio.on('select/show')
+@socketio.on('selectShow')
 def select_show(show_slug):
     print("Selecting show: " + show_slug)
-    show.select(show_slug)
-    emit('return/show', show.show)
+    try:
+        show.select(show_slug)
+        currentShow = show.show
+    except show.ShowNotFound as e:
+        print(e)
+        emit('error', e.message, 404)
+
+
+@socketio.on("standby")
+def standby():
+    print("Standby")
+    emit('standby', show.show)
 
 
 @app.route('/select/show/<show_slug>')
@@ -106,6 +117,12 @@ def camera_feed(index=0):
 @app.route('/default_camera_feed')
 def default_camera_feed():
     return Response(cameraAgent.gen_frames(0), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route("/krew")
+def camera_krew():
+    # send to http://10.153.32.229:5000/default_camera_feed
+    return redirect(location="/default_camera_feed", code=200)
 
 
 @app.route('/camera_feeds')

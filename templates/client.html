@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" class="w-screen h-screen">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Stage Manager Dashboard</title>
+		<!-- Include Tailwind CSS -->
+		<script src="/public/css/tailwind.css.js"></script>
+
+		<!-- Include Socket.io -->
+		<script src="/public/js/socket.io.js"></script>
+		<!-- Include Flowbite -->
+		<script src="/public/js/flowbite.min.js"></script>
+		<!-- Includes Maxst Icons8 -->
+		<link rel="stylesheet" href="/public/css/icons8.css" />
+	</head>
+
+	<script>
+		const show_slug = "{{ show_slug }}";
+	</script>
+
+	<body
+		class="bg-gray-100 dark:bg-slate-800 dark:text-white w-screen h-screen"
+	>
+		<!-- Error Box -->
+		<div
+			id="error"
+			class="fixed top-0 left-0 w-screen h-screen bg-gray-100 dark:bg-slate-800 dark:text-white flex flex-col justify-center items-center !hidden"
+		>
+			<h1 id="error-title" class="text-4xl font-bold text-center"></h1>
+
+			<p id="error-message" class="text-xl font-bold text-center"></p>
+
+			<button
+				id="error-close"
+				class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5"
+			>
+				Okay
+			</button>
+			<p class="text-gray-500 text-xs">
+				Clicking "Okay" will refresh the page and attempt to fix, please
+				contact the Christian Furr, Max McDaniel, or Boston Hurst if
+				this error persists.
+			</p>
+
+			<!-- error code in lower left corner of div -->
+			<p
+				id="error-details"
+				class="text-xs fixed bottom-0 left-0 m-[10px]"
+			></p>
+		</div>
+
+		<div
+			class="grid grid-cols-3 w-screen h-1/6 border-b-2 border-slate-700"
+			id="show-info"
+		>
+			<div
+				class="flex place-content-center border-r-2 border-slate-700"
+				id="show-info"
+			>
+				<div class="grid grid-cols-1 md:h-32 place-content-center">
+					<h1 class="text-4xl font-bold text-center" id="show-title">
+						Show Title
+					</h1>
+					<h1
+						class="text-xl font-bold text-center"
+						id="show-elapsed-time"
+					>
+						00:00:00
+					</h1>
+				</div>
+			</div>
+			<div class="flex place-content-center items-center">
+				<button
+					id="multiLevelDropdownButton"
+					data-dropdown-toggle="dropdown"
+					class="text-white bg-slate-700 hover:bg-slate-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
+					type="button"
+				>
+					Settings
+					<svg
+						class="w-2.5 h-2.5 ml-2.5"
+						aria-hidden="true"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 10 6"
+					>
+						<path
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="m1 1 4 4 4-4"
+						/>
+					</svg>
+				</button>
+				<!-- Dropdown menu -->
+				<div
+					id="dropdown"
+					class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+				>
+					<ul
+						class="py-2 text-sm text-gray-700 dark:text-gray-200"
+						aria-labelledby="multiLevelDropdownButton"
+					>
+						<li>
+							<a
+								href="#"
+								class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+								>My Account</a
+							>
+						</li>
+						<li>
+							<a
+								href="#"
+								class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+								>Switch Theme</a
+							>
+						</li>
+						<li>
+							<a
+								href="#"
+								class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+								>Sign out</a
+							>
+						</li>
+						<li>
+							<a
+								href="/shows/"
+								class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+								>Admin View</a
+							>
+						</li>
+					</ul>
+				</div>
+				<h1
+					class="text-xl font-bold text-center m-5 w-32 h-6"
+					id="clock"
+				>
+					00:00:00
+				</h1>
+			</div>
+		</div>
+		<div class="w-screen md:pt-8 h-5/6">
+			<div class="mb-8 w-screen flex flex-row justify-center h-[7%]">
+				<div
+					class="flex place-content-center items-center w-1/4 [&_h1]:m-2"
+				>
+					<h1 class="text-xl font-bold text-center">~</h1>
+					<h1 class="text-xl font-bold text-center">Cues</h1>
+					<h1 class="text-xl font-bold text-center">~</h1>
+				</div>
+				<div
+					class="flex place-content-center items-center w-2/4 [&_h1]:m-2"
+				>
+					<h1 class="text-xl font-bold text-center" id="show-act">
+						Placeholder
+					</h1>
+					<h1 class="text-xl font-bold text-center">•</h1>
+					<h1 class="text-xl font-bold text-center" id="show-scene">
+						Placeholder
+					</h1>
+					<h1 class="text-xl font-bold text-center">•</h1>
+					<h1 class="text-xl font-bold text-center" id="show-type">
+						Placeholder
+					</h1>
+				</div>
+				<div
+					class="flex place-content-center items-center w-1/4 [&_h1]:m-2"
+				>
+					<h1 class="text-xl font-bold text-center">~</h1>
+					<h1 class="text-xl font-bold text-center">Notes</h1>
+					<h1 class="text-xl font-bold text-center">~</h1>
+				</div>
+			</div>
+			<!-- div  that takes up remaing space in parent div-->
+			<div class="flex place-content-center h-[93%]">
+				<div id="cues" class="w-1/4 h-full">
+					<!-- list -->
+					<ul class="overflow-y-scroll h-full" id="cue-list"></ul>
+				</div>
+				<!-- {{ url_for('default_camera_feed') }} -->
+				<div class="w-2/4">
+					<img
+						src="/default_camera_feed"
+						alt="stage-view"
+						class="rounded-lg aspect-[21/10] w-full border-2 border-slate-700"
+					/>
+				</div>
+				<div id="notes" class="w-1/4"></div>
+			</div>
+		</div>
+
+		<!-- server status in bottom left corner -->
+		<div class="fixed bottom-0 left-0 m-[10px]">
+			<div class="grid grid-cols-1 md:h-20 place-content-center">
+				<p class="text-xs text-center">Server Status</p>
+				<p class="text-xs text-center" id="serverStat">Connecting</p>
+			</div>
+		</div>
+	</body>
+	<script defer>
+		const socket = io("http://localhost:5000");
+
+		const timer = document.getElementById("show-elapsed-time");
+		const clock = document.getElementById("clock");
+		const serverStat = document.getElementById("serverStat");
+
+		socket.on("connect", () => {
+			console.log("Connected");
+			serverStat.innerText = "Connected";
+			serverStat.classList.remove("text-red-500");
+			serverStat.classList.add("text-green-500");
+		});
+
+		socket.on("disconnect", () => {
+			console.log("Disconnected");
+			serverStat.innerText = "Disconnected";
+			serverStat.classList.remove("text-green-500");
+			serverStat.classList.add("text-red-500");
+		});
+	</script>
+
+	<script defer>
+		function displayError(title, message, error, showButton = true) {
+			let errorTitle = document.getElementById("error-title");
+			let errorMessage = document.getElementById("error-message");
+			let errorDetails = document.getElementById("error-details");
+
+			errorTitle.innerText = title;
+			errorMessage.innerText = message;
+			errorDetails.innerText = error;
+
+			let errorDiv = document.getElementById("error");
+			errorDiv.classList.remove("!hidden");
+
+			let errorClose = document.getElementById("error-close");
+			if (!showButton) {
+				errorClose.classList.add("!hidden");
+			} else {
+				errorClose.classList.remove("!hidden");
+			}
+			errorClose.addEventListener("click", () => {
+				errorDiv.classList.add("!hidden");
+				// go to home page
+				location.reload();
+			});
+		}
+		console.log("show_slug: " + show_slug);
+		if (show_slug == "None") {
+			document.getElementById("show-title").innerText =
+				"No Show Selected";
+			document.getElementById("show-elapsed-time").innerText = "00:00:00";
+			document.getElementById("show-act").innerText = "No";
+			document.getElementById("show-scene").innerText = "Show";
+			document.getElementById("show-type").innerText = "Selected";
+			document.getElementsByTagName("img")[0].src = "";
+			console.log("show_slug is null");
+			displayError(
+				"No Show Selected",
+				"Please remind the stage manager to select a show.",
+				"If there is a show selected, please contact the Christian Furr, Max McDaniel, or Boston Hurst if this error persists.",
+				(showButton = false)
+			);
+		}
+	</script>
+
+	<script defer>
+		/* Clock */
+
+		function updateClock() {
+			const now = new Date();
+			const time = now.toLocaleTimeString();
+			clock.innerText = time;
+		}
+
+		setInterval(updateClock, 1000);
+
+		/* Timer */
+
+		let seconds = 0;
+		let minutes = 0;
+		let hours = 0;
+
+		function updateTimer() {
+			seconds++;
+			if (seconds == 60) {
+				seconds = 0;
+				minutes++;
+			}
+			if (minutes == 60) {
+				minutes = 0;
+				hours++;
+				hours = `0${hours}`;
+			}
+
+			if (seconds.toString().split(``).length == 1) {
+				seconds = `0${seconds}`;
+			} else {
+				seconds = seconds.toString().trimStart();
+			}
+
+			if (minutes.toString().split(``).length == 1) {
+				minutes = `0${minutes}`;
+			} else {
+				minutes = minutes.toString().trimStart();
+			}
+
+			if (hours.toString().split(``).length == 1) {
+				hours = `0${hours}`;
+			} else {
+				minutes = minutes.toString().trimStart();
+			}
+
+			const time = `${hours}:${minutes}:${seconds}`;
+			timer.innerText = time;
+		}
+
+		setInterval(updateTimer, 1000);
+	</script>
+
+	<script defer>
+		/* Dark Mode */
+
+		const toggle = document.querySelector("button");
+
+		toggle.addEventListener("click", () => {
+			document.body.classList.toggle("dark");
+			toggle.classList.toggle("dark");
+		});
+	</script>
+</html>

@@ -71,12 +71,22 @@
         const socket = io("http://localhost:5000");
 
 		socket.on("connect", () => {
-			console.log("connected");
+			console.log("Connected");
 			serverStat.innerText = "Connected";
+			serverStat.classList.remove("text-red-500");
+			serverStat.classList.add("text-green-500");
 		});
+
 		socket.on("disconnect", () => {
-			console.log("disconnected");
+			console.log("Disconnected");
 			serverStat.innerText = "Disconnected";
+			serverStat.classList.remove("text-green-500");
+			serverStat.classList.add("text-red-500");
+			alert("Server Disconnected, please refresh the page.");
+		});
+
+		startButton.addEventListener("click", () => {
+			socket.emit("start", show_slug);
 		});
 	</script>
 

@@ -11,32 +11,83 @@ class ShowNotFound extends Error {
 		super(`Show not found, ${slug} does not exist.`);
 		this.name = "ShowNotFound";
 		this.slug = slug;
+		displayError(
+			"Show Not Found",
+			`The show ${slug} could not be found.`,
+			`ShowNotFound: ${this.message}`
+		);
 	}
 }
 
-class CueNotFound extends Error {
+class ErrorLoadingShow extends Error {
 	/**
-	 * Creates an instance of CueNotFound.
+	 * Creates an instance of ErrorLoadingShow.
+	 * @param {string} slug - The slug of the show that was not found.
+	 * @param {string} error - The error that was thrown.
+	 * @param {string} message - The error message.
+	 */
+	constructor(slug, error, message) {
+		super(
+			`Error loading show, ${slug} could not be loaded. ${error}: ${message}`
+		);
+		this.name = "ErrorLoadingShow";
+		this.slug = slug;
+		this.error = error;
+		this.message = message;
+		displayError(
+			"Error Loading Show",
+			`The show ${slug} could not be loaded.`,
+			`ErrorLoadingShow: ${this.message}`
+		);
+	}
+}
+
+class CueOutOfRange extends Error {
+	/**
+	 * Creates an instance of CueOutOfRange.
 	 * @param {string} cue - The name of the cue that was not found.
 	 * @param {number} cueIndex - The index of the cue.
 	 * @param {number} cueCount - The total number of cues in the scene.
 	 */
-	constructor(cue, cueIndex, cueCount) {
-		this.name = "CueNotFound";
-		this.cue = cue;
+	constructor(cueIndex, cueCount) {
+		super(
+			`Cue not found, ${cueIndex} is out of range. There are ${cueCount} cues in this scene.`
+		);
+
+		this.name = "CueOutOfRange";
 		this.cueIndex = cueIndex;
 		this.cueCount = cueCount;
-
-		if (this.cueIndex > this.cueCount) {
-			super(
-				`Cue not found, ${this.cue} does not exist. There are only ${this.cueCount} cues in this scene.`
-			);
-		} else {
-			super(
-				`Cue not found, ${this.cue} does not exist. Index cannot be less than 1.`
-			);
-		}
+		displayError(
+			"Cue Not Found",
+			`The cue ${cueIndex} could not be found.`,
+			`CueOutOfRange: ${this.message}`
+		);
 	}
+}
+
+function displayError(title, message, error, showButton = true) {
+	let errorTitle = document.getElementById("error-title");
+	let errorMessage = document.getElementById("error-message");
+	let errorDetails = document.getElementById("error-details");
+
+	errorTitle.innerText = title;
+	errorMessage.innerText = message;
+	errorDetails.innerText = error;
+
+	let errorDiv = document.getElementById("error");
+	errorDiv.classList.remove("!hidden");
+
+	let errorClose = document.getElementById("error-close");
+	if (!showButton) {
+		errorClose.classList.add("!hidden");
+	} else {
+		errorClose.classList.remove("!hidden");
+	}
+	errorClose.addEventListener("click", () => {
+		errorDiv.classList.add("!hidden");
+		// go to home page
+		window.location.href = "/";
+	});
 }
 
 /**
@@ -188,7 +239,7 @@ class Cues {
 		this.cueCount = null;
 		this.cueIndex = null;
 		this.currentCue = null;
-		this.CueNotFound = CueNotFound;
+		this.CueOutOfRange = CueOutOfRange;
 		this.load();
 	}
 
@@ -213,9 +264,11 @@ class Cues {
 			this.cue = this.cues[this.cueIndex - 1];
 		} else {
 			// Cue not found
-			CueNotFound(this.cue, this.cueIndex, this.cueCount);
+			throw new this.CueOutOfRange(this.cueIndex - 1, this.cueCount);
 		}
 		this.currentCue = this.cues[this.cueIndex - 1];
+		this.unselectCue(this.cueIndex + 1);
+		this.selectCue(this.cueIndex);
 		return this.cueIndex;
 	}
 
@@ -229,9 +282,11 @@ class Cues {
 			this.cue = this.cues[this.cueIndex - 1];
 		} else {
 			// Cue not found
-			CueNotFound(this.cue, this.cueIndex, this.cueCount);
+			throw new this.CueOutOfRange(this.cueIndex + 1, this.cueCount);
 		}
 		this.currentCue = this.cues[this.cueIndex - 1];
+		this.unselectCue(this.cueIndex - 1);
+		this.selectCue(this.cueIndex);
 		return this.cueIndex;
 	}
 
@@ -292,6 +347,29 @@ class Cues {
 			cueItem.appendChild(icon);
 			cueList.appendChild(cueItem);
 		});
+
+		this.selectCue(this.cueIndex);
+	}
+
+	selectCue(index) {
+		console.log("selecting cue");
+		console.log(index);
+		this.currentCue = this.cues[index - 1];
+		this.cueIndex = index;
+		let cueList = document.getElementById("cue-list");
+		let cues = cueList.getElementsByTagName("li");
+		let cue = cues[index - 1];
+		cue.className += " bg-opacity-80";
+	}
+
+	unselectCue(index) {
+		console.log("unselecting cue");
+		console.log(index);
+		let cueList = document.getElementById("cue-list");
+		let cues = cueList.getElementsByTagName("li");
+		let cue = cues[index - 1];
+
+		cue.className = cue.className.replace(" bg-opacity-80", "");
 	}
 
 	/**
@@ -323,13 +401,18 @@ class Show {
 	 * @param {object} showFile - The show object from a file.
 	 */
 	load(showFile) {
-		console.log(showFile);
-		this.show = showFile; // Load the show object
-		this.name = this.show.name;
-		this.type = this.show.type[0].toUpperCase() + this.show.type.slice(1);
-		this.slug = this.show.slug;
-		this.showType = this.show.type;
-		this.acts = new Acts(this.show);
+		try {
+			console.log(showFile);
+			this.show = showFile; // Load the show object
+			this.name = this.show.name;
+			this.type =
+				this.show.type[0].toUpperCase() + this.show.type.slice(1);
+			this.slug = this.show.slug;
+			this.showType = this.show.type;
+			this.acts = new Acts(this.show);
+		} catch (error) {
+			throw new ErrorLoadingShow(this.slug, error.name, error.message);
+		}
 	}
 
 	/**
@@ -349,13 +432,32 @@ class Show {
 	update() {
 		socket.emit(`update`, this.show);
 	}
+
+	next() {
+		if (this.acts.scene.cue.cueIndex < this.acts.scene.cue.cueCount) {
+			this.acts.scene.cue.next();
+		} else if (this.acts.scene.sceneIndex < this.acts.scene.sceneCount) {
+			this.acts.scene.next();
+		} else if (this.acts.actIndex < this.acts.actCount) {
+			this.acts.next();
+		} else {
+			this.acts.load();
+		}
+	}
 }
 
+// Show Info
 const showName = document.getElementById("show-title");
 const showType = document.getElementById("show-type");
 const showAct = document.getElementById("show-act");
 const showScene = document.getElementById("show-scene");
 
+// Buttons
+const goButton = document.getElementById("goButton");
+const standbyButton = document.getElementById("standbyButton");
+const stopButton = document.getElementById("stopButton");
+
+// show_slug varible is defined in html file same with socket
 const show = new Show(); // Create a new show
 const selectedShow = show.loadFromWeb(show_slug).then((result) => {
 	console.log("SHOW LOADED BBG");
@@ -364,4 +466,18 @@ const selectedShow = show.loadFromWeb(show_slug).then((result) => {
 	showAct.innerText = `Act ${show.acts.actIndex}`;
 	showScene.innerText = `Scene ${show.acts.scene.sceneIndex}`;
 	console.log(show.acts.scene.cue.getAll());
+});
+
+// Event Listeners
+goButton.addEventListener("click", () => {
+	show.next();
+});
+
+standbyButton.addEventListener("click", () => {
+	console.log("standby");
+	socket.emit("standby");
+});
+
+stopButton.addEventListener("click", () => {
+	socket.emit("stop");
 });
