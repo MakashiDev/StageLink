@@ -17,7 +17,7 @@ cameraAgent = CameraAgent()
 cameraAgent.app_context = app.app_context()
 show = ShowAgent()
 
-selectedShow = None
+selectedShow = 'camp-rock'
 showStarted = False
 
 
